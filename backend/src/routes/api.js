@@ -9,11 +9,15 @@ const vehiclesController = require('../controllers/vehiclesController');
 // STOPS ROUTES
 // =====================================================
 
-// Search stops (autocomplete)
-// GET /api/stops/search?q=chennai&type=bus&limit=10
+// Search stops (autocomplete) - combines database and OSM Overpass API
+// GET /api/stops/search?q=chennai&type=bus&limit=10&source=all
 router.get('/stops/search', stopsController.searchStops);
 
-// Get all stops
+// Get nearby stops (using OSM) - MUST be before /:id route
+// GET /api/stops/nearby?lat=13.0827&lon=80.2707&radius=1000
+router.get('/stops/nearby', stopsController.searchNearbyStops);
+
+// Get all stops (from database)
 // GET /api/stops?type=bus
 router.get('/stops', stopsController.getAllStops);
 

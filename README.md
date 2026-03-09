@@ -1,48 +1,25 @@
-# 🚌 Tamil Nadu Transport Finder
+# Tamil Nadu Bus Finder 🚌
 
-A web application to find and track bus and train routes across Tamil Nadu with real-time vehicle tracking.
+A real-time bus route finder and tracker for Tamil Nadu, India. Search for bus routes connecting Chennai, Coimbatore, Nagercoil and 80+ cities across Tamil Nadu.
 
-![Tamil Nadu Transport Finder](https://img.shields.io/badge/React-18-blue) ![Node.js](https://img.shields.io/badge/Node.js-20-green) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue) ![Leaflet](https://img.shields.io/badge/Leaflet-Maps-green)
+![Tamil Nadu Bus Finder](https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80)
 
-## 🎯 Features
+## Features
 
-- **🔍 Route Search** - Search for routes between any two stops with autocomplete
-- **➕ Add Intermediate Stops** - Plan routes with multiple stops
-- **🗺️ Interactive Map** - View routes on OpenStreetMap with Leaflet
-- **📍 Live Tracking** - Real-time vehicle position updates via WebSocket
-- **🚌 Bus & Train Support** - Find both bus and train routes
-- **🌐 Tamil Language** - Stop names in Tamil and English
+- 🔍 **Route Search**: Find bus routes between any two stops
+- 🗺️ **Interactive Map**: View routes on an interactive map with actual road paths (powered by OSRM)
+- 📍 **80+ Bus Stops**: Comprehensive coverage of Chennai, Coimbatore, Nagercoil and surrounding areas
+- 🚌 **Live Tracking**: Real-time bus location tracking
+- 🛤️ **20+ Routes**: SETC and TNSTC bus routes
 
-## 🏗️ Architecture
+## Tech Stack
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     FRONTEND (React)                         │
-│  - Vite + TypeScript                                        │
-│  - Tailwind CSS                                             │
-│  - Leaflet + React-Leaflet                                  │
-│  - WebSocket for live updates                               │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   BACKEND (Node.js)                          │
-│  - Express.js                                               │
-│  - WebSocket Server                                         │
-│  - REST API                                                 │
-│  - Vehicle Simulation                                       │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                  DATABASE (PostgreSQL)                       │
-│  - Stops (40+ locations)                                    │
-│  - Routes (15+ bus & train routes)                          │
-│  - Vehicles (simulated tracking)                            │
-└─────────────────────────────────────────────────────────────┘
-```
+- **Frontend**: React, TypeScript, Tailwind CSS, Leaflet
+- **Backend**: Node.js, Express
+- **Database**: PostgreSQL
+- **Maps**: OpenStreetMap + OSRM (Open Source Routing Machine)
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -50,213 +27,115 @@ A web application to find and track bus and train routes across Tamil Nadu with 
 - Docker & Docker Compose
 - npm or yarn
 
-### 1. Start the Database
+### Installation
 
-```bash
-# Start PostgreSQL with Docker
-docker-compose up -d
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/benuantony/road-scanner.git
+   cd road-scanner
+   ```
 
-# Wait for database to be ready (auto-seeds data)
-docker-compose logs -f postgres
-```
+2. **Start the database**
+   ```bash
+   docker-compose up -d
+   ```
 
-### 2. Start the Backend
+3. **Install backend dependencies**
+   ```bash
+   cd backend
+   npm install
+   ```
 
-```bash
-# Navigate to backend
-cd backend
+4. **Install frontend dependencies**
+   ```bash
+   cd ../frontend
+   npm install
+   ```
 
-# Install dependencies
-npm install
+5. **Start the backend server**
+   ```bash
+   cd ../backend
+   npm run dev
+   ```
 
-# Start the server
-npm run dev
-```
+6. **Start the frontend development server**
+   ```bash
+   cd ../frontend
+   npm run dev
+   ```
 
-The API will be available at `http://localhost:3001`
+7. **Open in browser**
+   ```
+   http://localhost:5173
+   ```
 
-### 3. Start the Frontend
-
-```bash
-# Navigate to frontend (in a new terminal)
-cd frontend
-
-# Install dependencies
-npm install
-
-# Start the dev server
-npm run dev
-```
-
-The app will be available at `http://localhost:3000`
-
-## 📡 API Endpoints
-
-### Stops
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/stops/search?q=chennai` | Search stops (autocomplete) |
-| GET | `/api/stops` | Get all stops |
-| GET | `/api/stops/:id` | Get stop by ID |
-
-### Routes
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/routes/find?from=1&to=5` | Find routes between stops |
-| GET | `/api/routes` | Get all routes |
-| GET | `/api/routes/:id` | Get route details |
-| GET | `/api/routes/:id/vehicles` | Get vehicles on route |
-
-### Vehicles
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/vehicles` | Get all active vehicles |
-| GET | `/api/vehicles/:id` | Get vehicle details |
-
-### WebSocket
-| Endpoint | Description |
-|----------|-------------|
-| `ws://localhost:3001/ws/tracking` | Real-time vehicle tracking |
-
-## 🗄️ Database Schema
-
-### Stops
-- Major cities: Chennai, Coimbatore, Madurai, Trichy, Salem, etc.
-- Both bus stops and railway stations
-- Tamil and English names
-- GPS coordinates
-
-### Routes
-- SETC (State Express) routes
-- TNSTC (State Transport) routes
-- Southern Railway trains (Shatabdi, Vaigai, etc.)
-
-### Sample Routes
-| Route | Type | Path |
-|-------|------|------|
-| S1 | Bus | Chennai → Salem → Coimbatore |
-| S2 | Bus | Chennai → Trichy → Madurai |
-| 12243 | Train | Chennai Central → Coimbatore (Shatabdi) |
-| 12632 | Train | Chennai Egmore → Madurai (Vaigai) |
-
-## 🎨 UI Layout
-
-```
-┌────────────────────────────────────────────────────────────────┐
-│  🚌 Tamil Nadu Transport Finder                                │
-├────────────────────────────────────────────────────────────────┤
-│  [From: ▼] [To: ▼] [+ Add Stop] [🔍 Search]                    │
-├────────────────────────────────────────────────────────────────┤
-│                               │                                │
-│    🗺️ MAP (70%)               │  📋 ROUTE LIST (30%)           │
-│    - OpenStreetMap            │  - Available routes            │
-│    - Route polylines          │  - Click to select             │
-│    - Stop markers             │  - Distance & duration         │
-│    - Vehicle positions        │                                │
-├───────────────────────────────┴────────────────────────────────┤
-│  🔴 LIVE TRACKING                                              │
-│  - Real-time vehicle positions                                 │
-│  - Progress indicators                                         │
-│  - Current & next stop                                         │
-└────────────────────────────────────────────────────────────────┘
-```
-
-## 🛠️ Tech Stack
-
-| Layer | Technology |
-|-------|------------|
-| **Frontend** | React 18, TypeScript, Vite |
-| **Styling** | Tailwind CSS |
-| **Maps** | Leaflet, React-Leaflet, OpenStreetMap |
-| **Backend** | Node.js, Express.js |
-| **Database** | PostgreSQL 15 |
-| **Real-time** | WebSocket (ws) |
-| **Container** | Docker, Docker Compose |
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 road-scanner/
-├── backend/
+├── frontend/                 # React frontend
 │   ├── src/
-│   │   ├── config/
-│   │   │   └── database.js
-│   │   ├── controllers/
-│   │   │   ├── stopsController.js
-│   │   │   ├── routesController.js
-│   │   │   └── vehiclesController.js
-│   │   ├── routes/
-│   │   │   └── api.js
-│   │   └── app.js
-│   ├── package.json
-│   └── .env
-├── frontend/
-│   ├── src/
-│   │   ├── components/
+│   │   ├── components/      # React components
+│   │   │   ├── App.tsx      # Main app with hero section
 │   │   │   ├── SearchBar.tsx
-│   │   │   ├── RouteMap.tsx
+│   │   │   ├── RouteMap.tsx # Map with OSRM integration
 │   │   │   ├── RouteList.tsx
 │   │   │   └── LiveTracker.tsx
-│   │   ├── hooks/
-│   │   │   └── useVehicleTracking.ts
-│   │   ├── services/
-│   │   │   └── api.ts
-│   │   ├── types/
-│   │   │   └── index.ts
-│   │   ├── App.tsx
-│   │   └── main.tsx
-│   ├── package.json
-│   └── vite.config.ts
-├── database/
+│   │   ├── hooks/           # Custom hooks
+│   │   ├── services/        # API services
+│   │   └── types/           # TypeScript types
+│   └── ...
+├── backend/                  # Node.js backend
+│   ├── src/
+│   │   ├── controllers/     # Route controllers
+│   │   ├── routes/          # API routes
+│   │   └── config/          # Database config
+│   └── ...
+├── database/                 # Database initialization
 │   └── init/
-│       ├── 01-schema.sql
-│       └── 02-seed-data.sql
-├── docker-compose.yml
-└── README.md
+│       ├── 01-schema.sql    # Database schema
+│       └── 02-seed-data.sql # Bus stops & routes data
+└── docker-compose.yml       # Docker configuration
 ```
 
-## 🔧 Configuration
+## Coverage Areas
 
-### Backend (.env)
-```env
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=roadscanner
-DB_USER=roadscanner
-DB_PASSWORD=roadscanner123
-PORT=3001
-```
+### Major Bus Stands
+- **Chennai**: CMBT (Koyambedu), Tambaram
+- **Coimbatore**: Gandhipuram, Ukkadam, Singanallur
+- **Nagercoil**: Main Bus Stand, Kanyakumari
 
-### Frontend (vite.config.ts)
-- API proxy to backend on port 3001
-- WebSocket proxy for live tracking
+### Routes Covered
+- Chennai - Coimbatore Express (via Salem)
+- Chennai - Madurai Express
+- Chennai - Nagercoil Express
+- Coimbatore - Nagercoil Express
+- And many more regional routes...
 
-## 🚦 Development
+## API Endpoints
 
-### Run all services
-```bash
-# Terminal 1 - Database
-docker-compose up -d
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/stops/search` | GET | Search bus stops |
+| `/api/routes/find` | GET | Find routes between stops |
+| `/api/routes/:id` | GET | Get route details |
+| `/api/vehicles` | GET | Get live vehicle positions |
 
-# Terminal 2 - Backend
-cd backend && npm run dev
+## Contributing
 
-# Terminal 3 - Frontend
-cd frontend && npm run dev
-```
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-### Reset database
-```bash
-docker-compose down -v
-docker-compose up -d
-```
+## License
 
-## 📝 License
+This project is licensed under the MIT License.
 
-ISC
+## Acknowledgments
 
-## 🙏 Acknowledgments
-
-- OpenStreetMap for map tiles
-- Leaflet for map library
-- Tamil Nadu transport data (mocked)
+- [OpenStreetMap](https://www.openstreetmap.org/) for map data
+- [OSRM](http://project-osrm.org/) for routing engine
+- [Leaflet](https://leafletjs.com/) for map library
+- [Unsplash](https://unsplash.com/) for hero image

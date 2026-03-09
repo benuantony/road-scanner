@@ -2,17 +2,22 @@ import { useState, useEffect, useRef } from 'react';
 import { Stop } from '../types';
 import { stopsApi } from '../services/api';
 
+// Extended Stop type to include source
+interface StopWithSource extends Stop {
+  source?: 'db' | 'osm';
+}
+
 interface StopInputProps {
   label: string;
   placeholder: string;
-  value: Stop | null;
-  onChange: (stop: Stop | null) => void;
+  value: StopWithSource | null;
+  onChange: (stop: StopWithSource | null) => void;
   icon: React.ReactNode;
 }
 
 function StopInput({ label, placeholder, value, onChange, icon }: StopInputProps) {
   const [query, setQuery] = useState('');
-  const [suggestions, setSuggestions] = useState<Stop[]>([]);
+  const [suggestions, setSuggestions] = useState<StopWithSource[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -62,7 +67,7 @@ function StopInput({ label, placeholder, value, onChange, icon }: StopInputProps
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleSelect = (stop: Stop) => {
+  const handleSelect = (stop: StopWithSource) => {
     onChange(stop);
     setQuery(stop.name);
     setIsOpen(false);
@@ -73,19 +78,6 @@ function StopInput({ label, placeholder, value, onChange, icon }: StopInputProps
     setQuery('');
     setSuggestions([]);
     inputRef.current?.focus();
-  };
-
-  const getStopTypeIcon = (type: string) => {
-    switch (type) {
-      case 'bus':
-        return '🚌';
-      case 'train':
-        return '🚃';
-      case 'both':
-        return '🚉';
-      default:
-        return '📍';
-    }
   };
 
   return (
@@ -109,7 +101,7 @@ function StopInput({ label, placeholder, value, onChange, icon }: StopInputProps
           }}
           onFocus={() => suggestions.length > 0 && setIsOpen(true)}
           placeholder={placeholder}
-          className="w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+          className="w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
         />
         {isLoading && (
           <span className="absolute right-10 top-1/2 -translate-y-1/2">
@@ -142,10 +134,22 @@ function StopInput({ label, placeholder, value, onChange, icon }: StopInputProps
               onClick={() => handleSelect(stop)}
               className="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center gap-3 border-b border-gray-100 last:border-0"
             >
-              <span className="text-lg">{getStopTypeIcon(stop.stop_type)}</span>
-              <div>
-                <p className="font-medium text-gray-900">{stop.name}</p>
-                <p className="text-sm text-gray-500">{stop.district}</p>
+              <span className="text-lg">🚏</span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <p className="font-medium text-gray-900 truncate">{stop.name}</p>
+                  {stop.source === 'osm' && (
+                    <span className="text-xs px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded-full flex-shrink-0">
+                      OSM
+                    </span>
+                  )}
+                  {stop.source === 'db' && (
+                    <span className="text-xs px-1.5 py-0.5 bg-green-100 text-green-700 rounded-full flex-shrink-0">
+                      Route
+                    </span>
+                  )}
+                </div>
+                <p className="text-sm text-gray-500">{stop.district || 'Tamil Nadu'}</p>
               </div>
             </button>
           ))}
@@ -160,9 +164,9 @@ interface SearchBarProps {
 }
 
 export default function SearchBar({ onSearch }: SearchBarProps) {
-  const [fromStop, setFromStop] = useState<Stop | null>(null);
-  const [toStop, setToStop] = useState<Stop | null>(null);
-  const [intermediateStops, setIntermediateStops] = useState<(Stop | null)[]>([]);
+  const [fromStop, setFromStop] = useState<StopWithSource | null>(null);
+  const [toStop, setToStop] = useState<StopWithSource | null>(null);
+  const [intermediateStops, setIntermediateStops] = useState<(StopWithSource | null)[]>([]);
 
   const handleAddStop = () => {
     setIntermediateStops([...intermediateStops, null]);
@@ -172,7 +176,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
     setIntermediateStops(intermediateStops.filter((_, i) => i !== index));
   };
 
-  const handleIntermediateChange = (index: number, stop: Stop | null) => {
+  const handleIntermediateChange = (index: number, stop: StopWithSource | null) => {
     const newStops = [...intermediateStops];
     newStops[index] = stop;
     setIntermediateStops(newStops);
@@ -192,7 +196,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
       <div className="flex flex-wrap gap-4 items-end">
         <StopInput
           label="From"
-          placeholder="Enter origin..."
+          placeholder="Search bus stops..."
           value={fromStop}
           onChange={setFromStop}
           icon={
@@ -206,7 +210,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
         {intermediateStops.map((stop, index) => (
           <div key={index} className="relative flex-1 min-w-[200px]">
             <StopInput
-              label={`Stop ${index + 1}`}
+              label={`Via Stop ${index + 1}`}
               placeholder="Add stop..."
               value={stop}
               onChange={(s) => handleIntermediateChange(index, s)}
@@ -230,7 +234,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
 
         <StopInput
           label="To"
-          placeholder="Enter destination..."
+          placeholder="Search bus stops..."
           value={toStop}
           onChange={setToStop}
           icon={
@@ -249,7 +253,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            Add Stop
+            <span className="hidden sm:inline">Add Stop</span>
           </button>
 
           <button
@@ -257,16 +261,28 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
             disabled={!canSearch}
             className={`px-6 py-2.5 rounded-lg font-medium flex items-center gap-2 transition-all ${
               canSearch
-                ? 'bg-blue-600 text-white hover:bg-blue-700'
+                ? 'bg-green-600 text-white hover:bg-green-700'
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed'
             }`}
           >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-            Search Routes
+            Find Routes
           </button>
         </div>
+      </div>
+      
+      {/* Helper text */}
+      <div className="mt-3 text-xs text-gray-500 flex items-center gap-4">
+        <span className="flex items-center gap-1">
+          <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+          Route stops (have bus routes)
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+          OSM stops (from OpenStreetMap)
+        </span>
       </div>
     </div>
   );

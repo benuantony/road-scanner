@@ -1,6 +1,6 @@
--- Tamil Nadu Bus & Train Routes Database Schema
+-- Tamil Nadu Bus Routes Database Schema
 
--- Stops table (Bus stops, Railway stations)
+-- Stops table (Bus stops)
 CREATE TABLE stops (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE stops (
     latitude DECIMAL(10, 8) NOT NULL,
     longitude DECIMAL(11, 8) NOT NULL,
     district VARCHAR(100),
-    stop_type VARCHAR(20) NOT NULL DEFAULT 'bus', -- 'bus', 'train', 'both'
+    stop_type VARCHAR(20) NOT NULL DEFAULT 'bus', -- 'bus'
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -16,13 +16,13 @@ CREATE TABLE stops (
 CREATE INDEX idx_stops_name ON stops USING gin(to_tsvector('english', name));
 CREATE INDEX idx_stops_name_lower ON stops(LOWER(name));
 
--- Routes table (Bus routes, Train routes)
+-- Routes table (Bus routes)
 CREATE TABLE routes (
     id SERIAL PRIMARY KEY,
     route_number VARCHAR(50) NOT NULL,
     route_name VARCHAR(255),
-    transport_type VARCHAR(20) NOT NULL, -- 'bus', 'train'
-    operator VARCHAR(100), -- 'TNSTC', 'SETC', 'Southern Railway', etc.
+    transport_type VARCHAR(20) NOT NULL, -- 'bus'
+    operator VARCHAR(100), -- 'TNSTC', 'SETC', etc.
     frequency_mins INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -42,12 +42,12 @@ CREATE TABLE route_stops (
 CREATE INDEX idx_route_stops_route ON route_stops(route_id);
 CREATE INDEX idx_route_stops_stop ON route_stops(stop_id);
 
--- Vehicles table (Buses and Trains)
+-- Vehicles table (Buses)
 CREATE TABLE vehicles (
     id SERIAL PRIMARY KEY,
     vehicle_number VARCHAR(50) NOT NULL,
     route_id INT REFERENCES routes(id) ON DELETE SET NULL,
-    transport_type VARCHAR(20) NOT NULL,
+    transport_type VARCHAR(20) NOT NULL DEFAULT 'bus',
     current_stop_id INT REFERENCES stops(id),
     next_stop_id INT REFERENCES stops(id),
     current_latitude DECIMAL(10, 8),
