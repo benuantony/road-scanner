@@ -1,0 +1,62 @@
+-- Tamil Nadu Bus & Train Routes Database Schema
+
+-- Stops table (Bus stops, Railway stations)
+CREATE TABLE stops (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    name_tamil VARCHAR(255),
+    latitude DECIMAL(10, 8) NOT NULL,
+    longitude DECIMAL(11, 8) NOT NULL,
+    district VARCHAR(100),
+    stop_type VARCHAR(20) NOT NULL DEFAULT 'bus', -- 'bus', 'train', 'both'
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create index for search
+CREATE INDEX idx_stops_name ON stops USING gin(to_tsvector('english', name));
+CREATE INDEX idx_stops_name_lower ON stops(LOWER(name));
+
+-- Routes table (Bus routes, Train routes)
+CREATE TABLE routes (
+    id SERIAL PRIMARY KEY,
+    route_number VARCHAR(50) NOT NULL,
+    route_name VARCHAR(255),
+    transport_type VARCHAR(20) NOT NULL, -- 'bus', 'train'
+    operator VARCHAR(100), -- 'TNSTC', 'SETC', 'Southern Railway', etc.
+    frequency_mins INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Route-Stop mapping (ordered stops for each route)
+CREATE TABLE route_stops (
+    id SERIAL PRIMARY KEY,
+    route_id INT NOT NULL REFERENCES routes(id) ON DELETE CASCADE,
+    stop_id INT NOT NULL REFERENCES stops(id) ON DELETE CASCADE,
+    stop_sequence INT NOT NULL,
+    distance_from_start DECIMAL(10, 2), -- in kilometers
+    arrival_offset_mins INT, -- time from route start
+    UNIQUE(route_id, stop_id),
+    UNIQUE(route_id, stop_sequence)
+);
+
+CREATE INDEX idx_route_stops_route ON route_stops(route_id);
+CREATE INDEX idx_route_stops_stop ON route_stops(stop_id);
+
+-- Vehicles table (Buses and Trains)
+CREATE TABLE vehicles (
+    id SERIAL PRIMARY KEY,
+    vehicle_number VARCHAR(50) NOT NULL,
+    route_id INT REFERENCES routes(id) ON DELETE SET NULL,
+    transport_type VARCHAR(20) NOT NULL,
+    current_stop_id INT REFERENCES stops(id),
+    next_stop_id INT REFERENCES stops(id),
+    current_latitude DECIMAL(10, 8),
+    current_longitude DECIMAL(11, 8),
+    progress_percent DECIMAL(5, 2) DEFAULT 0, -- Progress between current and next stop
+    status VARCHAR(20) DEFAULT 'running', -- 'running', 'stopped', 'delayed', 'completed'
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_vehicles_route ON vehicles(route_id);
+CREATE INDEX idx_vehicles_status ON vehicles(status);
