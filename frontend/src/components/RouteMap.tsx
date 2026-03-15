@@ -294,7 +294,7 @@ export default function RouteMap({ selectedRoute, vehicles, allRoutes = [], focu
           );
         })()}
 
-        {/* Route stops */}
+        {/* Route stops - All stops on the selected route */}
         {routeStops.map((stop, index) => {
           const isMetro = selectedRoute?.transport_type === 'metro';
           const isFirst = index === 0;
@@ -314,14 +314,9 @@ export default function RouteMap({ selectedRoute, vehicles, allRoutes = [], focu
           
           return (
             <Marker
-              key="current-bus-position"
-              position={[routeStops[currentStopIndex].latitude, routeStops[currentStopIndex].longitude]}
-              icon={createVehicleIcon(selectedRoute.transport_type || 'bus', selectedRoute.operator)}
-              eventHandlers={{
-                click: () => {
-                  if (onBusClick) onBusClick();
-                }
-              }}
+              key={`stop-${stop.stop_id}-${index}`}
+              position={[stop.latitude, stop.longitude]}
+              icon={createStopIcon(true, index, routeStops.length, selectedRoute?.transport_type)}
             >
               <Popup>
                 <div className="min-w-[260px] bg-white rounded-lg shadow-lg overflow-hidden" style={{ margin: '-14px -20px' }}>
@@ -437,9 +432,23 @@ export default function RouteMap({ selectedRoute, vehicles, allRoutes = [], focu
         {/* Current bus position marker - shows bus at the current stop (orange dot in timeline) */}
         {selectedRoute && routeStops.length > 0 && currentStopIndex < routeStops.length && (() => {
           const isMetro = selectedRoute.transport_type === 'metro';
+          const isVolvo = selectedRoute.operator?.includes('Volvo');
+          const isVajra = selectedRoute.operator?.includes('Vajra');
           const stopsCompleted = currentStopIndex;
           const stopsRemaining = routeStops.length - 1 - currentStopIndex;
           const progressPercent = routeStops.length > 1 ? Math.round((currentStopIndex / (routeStops.length - 1)) * 100) : 0;
+
+          // Get icon and colors based on type
+          const { emoji } = getVehicleEmoji(selectedRoute.transport_type || 'bus', selectedRoute.operator);
+          const headerBgColor = isMetro ? 'bg-purple-600' : isVolvo ? 'bg-blue-600' : isVajra ? 'bg-orange-500' : 'bg-green-600';
+          const accentColor = isMetro ? 'text-purple-600' : isVolvo ? 'text-blue-600' : isVajra ? 'text-orange-600' : 'text-green-600';
+          const progressBgColor = isMetro 
+            ? 'bg-gradient-to-r from-purple-500 to-purple-600' 
+            : isVolvo 
+              ? 'bg-gradient-to-r from-blue-500 to-blue-600'
+              : isVajra
+                ? 'bg-gradient-to-r from-orange-500 to-orange-600'
+                : 'bg-gradient-to-r from-green-500 to-green-600';
 
           // Calculate ETA to destination
           const currentArrivalOffset = routeStops[currentStopIndex]?.arrival_offset || 0;
@@ -460,14 +469,19 @@ export default function RouteMap({ selectedRoute, vehicles, allRoutes = [], focu
             <Marker
               key="current-bus-position"
               position={[routeStops[currentStopIndex].latitude, routeStops[currentStopIndex].longitude]}
-              icon={createVehicleIcon(selectedRoute.transport_type || 'bus')}
+              icon={createVehicleIcon(selectedRoute.transport_type || 'bus', selectedRoute.operator)}
+              eventHandlers={{
+                click: () => {
+                  if (onBusClick) onBusClick();
+                }
+              }}
             >
               <Popup>
                 <div className="min-w-[280px] bg-white rounded-lg shadow-lg overflow-hidden" style={{ margin: '-14px -20px' }}>
                   {/* Header */}
-                  <div className={`px-4 py-3 ${isMetro ? 'bg-purple-600' : 'bg-blue-600'} text-white`}>
+                  <div className={`px-4 py-3 ${headerBgColor} text-white`}>
                     <div className="flex items-center gap-2">
-                      <span className="text-2xl">{isMetro ? '🚇' : '🚌'}</span>
+                      <span className="text-2xl">{emoji}</span>
                       <div>
                         <p className="font-bold">{selectedRoute.route_number}</p>
                         <p className="text-xs text-white/80">{selectedRoute.route_name}</p>
@@ -488,10 +502,10 @@ export default function RouteMap({ selectedRoute, vehicles, allRoutes = [], focu
                   {currentStopIndex < routeStops.length - 1 && (
                     <div className="px-4 py-3 border-b border-gray-100">
                       <div className="flex items-center gap-2">
-                        <div className={`w-3 h-3 ${isMetro ? 'bg-purple-400' : 'bg-blue-400'} rounded-full`}></div>
+                        <div className={`w-3 h-3 ${isMetro ? 'bg-purple-400' : isVolvo ? 'bg-blue-400' : isVajra ? 'bg-orange-400' : 'bg-green-400'} rounded-full`}></div>
                         <span className="text-xs text-gray-500 font-medium uppercase">Next Stop</span>
                         {nextStopOffset > 0 && (
-                          <span className={`ml-auto text-xs font-bold ${isMetro ? 'text-purple-600' : 'text-blue-600'}`}>
+                          <span className={`ml-auto text-xs font-bold ${accentColor}`}>
                             ~{nextStopOffset} min
                           </span>
                         )}
@@ -504,15 +518,11 @@ export default function RouteMap({ selectedRoute, vehicles, allRoutes = [], focu
                   <div className="px-4 py-3 border-b border-gray-100">
                     <div className="flex items-center justify-between text-sm mb-2">
                       <span className="text-gray-500">Route Progress</span>
-                      <span className={`font-bold ${isMetro ? 'text-purple-600' : 'text-blue-600'}`}>{progressPercent}%</span>
+                      <span className={`font-bold ${accentColor}`}>{progressPercent}%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
                       <div
-                        className={`h-3 rounded-full transition-all duration-500 ${
-                          isMetro 
-                            ? 'bg-gradient-to-r from-purple-500 to-purple-600' 
-                            : 'bg-gradient-to-r from-blue-500 to-blue-600'
-                        }`}
+                        className={`h-3 rounded-full transition-all duration-500 ${progressBgColor}`}
                         style={{ width: `${progressPercent}%` }}
                       />
                     </div>
@@ -535,7 +545,7 @@ export default function RouteMap({ selectedRoute, vehicles, allRoutes = [], focu
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <p className="text-xs text-gray-500 uppercase mb-1">ETA to Destination</p>
-                        <p className={`text-lg font-bold ${isMetro ? 'text-purple-600' : 'text-blue-600'}`}>
+                        <p className={`text-lg font-bold ${accentColor}`}>
                           {etaToDestination > 0 ? `${etaToDestination} min` : 'Arrived'}
                         </p>
                       </div>
