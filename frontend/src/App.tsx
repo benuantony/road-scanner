@@ -18,6 +18,7 @@ function App() {
   const [transportFilter, setTransportFilter] = useState<'all' | 'bus' | 'metro'>('all');
   const [focusedStop, setFocusedStop] = useState<{ latitude: number; longitude: number } | null>(null);
   const [currentStopIndex, setCurrentStopIndex] = useState<number>(0);
+  const [timelineCollapseState, setTimelineCollapseState] = useState<'expanded' | 'mini' | 'collapsed'>('expanded');
 
   // Get route IDs for WebSocket subscription
   const routeIds = useMemo(() => {
@@ -73,6 +74,12 @@ function App() {
 
   const handleCurrentStopChange = (index: number) => {
     setCurrentStopIndex(index);
+  };
+
+  // Handler for when bus icon on map is clicked
+  const handleBusClick = () => {
+    // Set to mini state when bus is clicked on map
+    setTimelineCollapseState('mini');
   };
 
   return (
@@ -132,6 +139,7 @@ function App() {
                     allRoutes={routes}
                     focusedStop={focusedStop}
                     currentStopIndex={currentStopIndex}
+                    onBusClick={handleBusClick}
                   />
                 </div>
               </div>
@@ -153,7 +161,7 @@ function App() {
 
             {/* Route Timeline - Fixed height at bottom */}
             {selectedRoute && (
-              <div className="flex-shrink-0 max-h-[40vh] overflow-hidden">
+              <div className="flex-shrink-0 overflow-hidden">
                 <RouteTimeline
                   route={selectedRoute}
                   vehicles={filteredVehicles}
@@ -161,6 +169,8 @@ function App() {
                   onClose={handleCloseTimeline}
                   onStopSelect={handleStopSelect}
                   onCurrentStopChange={handleCurrentStopChange}
+                  collapseState={timelineCollapseState}
+                  onCollapseStateChange={setTimelineCollapseState}
                 />
               </div>
             )}

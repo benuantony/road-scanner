@@ -1,5 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Route, Vehicle } from '../types';
+
+// Collapse states: 'expanded' | 'mini' | 'collapsed'
+type CollapseState = 'expanded' | 'mini' | 'collapsed';
 
 interface RouteTimelineProps {
   route: Route;
@@ -8,21 +11,75 @@ interface RouteTimelineProps {
   onClose: () => void;
   onStopSelect?: (stopIndex: number, latitude: number, longitude: number) => void;
   onCurrentStopChange?: (currentStopIndex: number) => void;
+  collapseState?: CollapseState; // External control for collapse state
+  onCollapseStateChange?: (state: CollapseState) => void;
 }
 
-export default function RouteTimeline({ route, vehicles, isConnected, onClose, onStopSelect, onCurrentStopChange }: RouteTimelineProps) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+export default function RouteTimeline({ 
+  route, 
+  vehicles, 
+  isConnected, 
+  onClose, 
+  onStopSelect, 
+  onCurrentStopChange,
+  collapseState: externalCollapseState,
+  onCollapseStateChange 
+}: RouteTimelineProps) {
+  const [internalCollapseState, setInternalCollapseState] = useState<CollapseState>('expanded');
+  
+  // Use external state if provided, otherwise use internal
+  const collapseState = externalCollapseState ?? internalCollapseState;
+  const setCollapseState = (state: CollapseState) => {
+    if (onCollapseStateChange) {
+      onCollapseStateChange(state);
+    } else {
+      setInternalCollapseState(state);
+    }
+  };
+
+  // Sync internal state with external state
+  useEffect(() => {
+    if (externalCollapseState !== undefined) {
+      setInternalCollapseState(externalCollapseState);
+    }
+  }, [externalCollapseState]);
+
   const stops = route.stops || [];
   const isMetro = route.transport_type === 'metro';
+  const isVolvo = route.operator?.includes('Volvo');
+  const isVajra = route.operator?.includes('Vajra');
+  
+  // Get colors based on operator
+  const headerBgColor = isMetro 
+    ? 'bg-gradient-to-r from-purple-600 to-purple-700' 
+    : isVolvo 
+      ? 'bg-gradient-to-r from-blue-600 to-blue-700'
+      : isVajra
+        ? 'bg-gradient-to-r from-orange-500 to-orange-600'
+        : 'bg-gradient-to-r from-green-600 to-green-700';
+
+  const accentColorClass = isMetro ? 'text-purple-600' : isVolvo ? 'text-blue-600' : isVajra ? 'text-orange-600' : 'text-green-600';
+  const progressBgClass = isMetro 
+    ? 'bg-gradient-to-r from-purple-500 to-purple-600' 
+    : isVolvo 
+      ? 'bg-gradient-to-r from-blue-500 to-blue-600'
+      : isVajra
+        ? 'bg-gradient-to-r from-orange-500 to-orange-600'
+        : 'bg-gradient-to-r from-green-500 to-green-600';
+
+  // Get emoji
+  const getEmoji = () => {
+    if (isMetro) return '🚇';
+    if (isVolvo) return '🚎';
+    if (isVajra) return '🚐';
+    return '🚌';
+  };
   
   // Simulate current stop index based on timestamp (randomized per route)
   const currentStopIndex = useMemo(() => {
-    // Use route ID and current time to create a pseudo-random but consistent position
     const now = Date.now();
     const minuteOfDay = Math.floor((now % (24 * 60 * 60 * 1000)) / 60000);
     const seed = route.id + minuteOfDay;
-    
-    // This creates a position that changes every ~3 minutes and varies by route
     const progress = (seed % 100) / 100;
     const idx = Math.floor(progress * stops.length);
     return Math.min(idx, stops.length - 1);
@@ -50,10 +107,12 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
   const originName = stops[0]?.stop_name || 'Start';
   const destName = stops[stops.length - 1]?.stop_name || 'End';
   const currentStopName = stops[currentStopIndex]?.stop_name || '';
+  const nextStopName = currentStopIndex < stops.length - 1 ? stops[currentStopIndex + 1]?.stop_name : '';
   
   // Count stops by status
   const passedCount = currentStopIndex;
   const upcomingCount = stops.length - currentStopIndex - 1;
+  const progressPercent = stops.length > 1 ? Math.round((currentStopIndex / (stops.length - 1)) * 100) : 0;
   
   // Calculate ETA to destination
   const currentArrivalOffset = stops[currentStopIndex]?.arrival_offset || 0;
@@ -65,6 +124,11 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
     ? (stops[currentStopIndex + 1]?.arrival_offset || 0) - currentArrivalOffset
     : 0;
 
+  // Calculate predicted arrival time
+  const now = new Date();
+  const predictedArrival = new Date(now.getTime() + etaToDestination * 60000);
+  const predictedArrivalStr = predictedArrival.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+
   const getStopStatus = (index: number) => {
     if (index < currentStopIndex) return 'reached';
     if (index === currentStopIndex) return 'current';
@@ -73,16 +137,16 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
 
   const getStopColor = (status: string) => {
     switch (status) {
-      case 'reached': return isMetro ? 'bg-purple-500' : 'bg-green-500';
+      case 'reached': return isMetro ? 'bg-purple-500' : isVolvo ? 'bg-blue-500' : isVajra ? 'bg-orange-500' : 'bg-green-500';
       case 'current': return 'bg-orange-500';
-      case 'upcoming': return isMetro ? 'bg-purple-200' : 'bg-blue-200';
+      case 'upcoming': return isMetro ? 'bg-purple-200' : isVolvo ? 'bg-blue-200' : isVajra ? 'bg-orange-200' : 'bg-green-200';
       default: return 'bg-gray-300';
     }
   };
 
   const getLineColor = (fromStatus: string) => {
     if (fromStatus === 'reached' || fromStatus === 'current') {
-      return isMetro ? 'bg-purple-400' : 'bg-green-400';
+      return isMetro ? 'bg-purple-400' : isVolvo ? 'bg-blue-400' : isVajra ? 'bg-orange-400' : 'bg-green-400';
     }
     return 'bg-gray-200';
   };
@@ -96,7 +160,7 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
   };
 
   const calculateETA = (stopIndex: number) => {
-    if (stopIndex < currentStopIndex) return null; // Already passed
+    if (stopIndex < currentStopIndex) return null;
     if (stopIndex === currentStopIndex) return 0;
     const currentTime = stops[currentStopIndex]?.arrival_offset || 0;
     const stopTime = stops[stopIndex]?.arrival_offset || 0;
@@ -111,26 +175,20 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
     return now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
   };
 
-  // Calculate scheduled and actual times for passed stops
   const getStopTiming = (stopIndex: number) => {
     const scheduledOffset = stops[stopIndex]?.arrival_offset || 0;
-    
-    // Simulate random delay (Bangalore traffic! 2-15 mins for passed stops)
     const seed = route.id * 1000 + stopIndex;
     const delayMins = stopIndex < currentStopIndex 
-      ? Math.floor((seed % 14) + 2) // 2-15 mins delay for passed stops
-      : Math.floor((seed % 8)); // 0-7 mins delay for upcoming (predicted)
+      ? Math.floor((seed % 14) + 2)
+      : Math.floor((seed % 8));
     
-    // Calculate base scheduled time (assume route started X minutes ago)
     const routeStartTime = new Date();
     const elapsedMins = stops[currentStopIndex]?.arrival_offset || 0;
     routeStartTime.setMinutes(routeStartTime.getMinutes() - elapsedMins);
     
-    // Scheduled time
     const scheduledTime = new Date(routeStartTime);
     scheduledTime.setMinutes(scheduledTime.getMinutes() + scheduledOffset);
     
-    // Actual time (scheduled + delay)
     const actualTime = new Date(scheduledTime);
     actualTime.setMinutes(actualTime.getMinutes() + delayMins);
     
@@ -141,22 +199,30 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
     };
   };
 
-  // Toggle collapse/expand
-  const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
+  // Cycle through collapse states
+  const cycleCollapseState = () => {
+    const states: CollapseState[] = ['expanded', 'mini', 'collapsed'];
+    const currentIndex = states.indexOf(collapseState);
+    const nextIndex = (currentIndex + 1) % states.length;
+    setCollapseState(states[nextIndex]);
+  };
+
+  // Get height class based on state
+  const getHeightClass = () => {
+    switch (collapseState) {
+      case 'collapsed': return 'max-h-[60px]';
+      case 'mini': return 'max-h-[160px]';
+      case 'expanded': return 'max-h-[50vh]';
+    }
   };
 
   return (
-    <div className={`bg-white border-t-2 border-gray-200 shadow-lg flex flex-col transition-all duration-300 ease-in-out ${
-      isCollapsed ? 'max-h-[60px]' : 'max-h-[50vh]'
-    }`}>
+    <div className={`bg-white border-t-2 border-gray-200 shadow-lg flex flex-col transition-all duration-300 ease-in-out ${getHeightClass()}`}>
       {/* Header - Always Visible */}
-      <div className={`px-4 py-2.5 flex items-center justify-between flex-shrink-0 ${
-        isMetro ? 'bg-gradient-to-r from-purple-600 to-purple-700' : 'bg-gradient-to-r from-blue-600 to-blue-700'
-      }`}>
+      <div className={`px-4 py-2.5 flex items-center justify-between flex-shrink-0 ${headerBgColor}`}>
         {/* Left: Route Info & Flow */}
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <span className="text-xl flex-shrink-0">{isMetro ? '🚇' : '🚌'}</span>
+          <span className="text-xl flex-shrink-0">{getEmoji()}</span>
           <div className="flex items-center gap-2 min-w-0 flex-1">
             <span className="font-bold text-white text-sm">{route.route_number}</span>
             <span className="text-white/60">|</span>
@@ -168,11 +234,11 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
           </div>
         </div>
 
-        {/* Center: Legend (only when collapsed) OR Stats (when expanded) */}
-        {isCollapsed ? (
+        {/* Center: Legend (collapsed) OR Stats (expanded) */}
+        {collapseState === 'collapsed' ? (
           <div className="flex items-center gap-3 text-xs px-4">
             <div className="flex items-center gap-1">
-              <span className={`w-2.5 h-2.5 rounded-full ${isMetro ? 'bg-purple-300' : 'bg-green-300'}`}></span>
+              <span className={`w-2.5 h-2.5 rounded-full ${isMetro ? 'bg-purple-300' : isVolvo ? 'bg-blue-300' : isVajra ? 'bg-orange-300' : 'bg-green-300'}`}></span>
               <span className="text-white/80">{passedCount}</span>
             </div>
             <div className="flex items-center gap-1">
@@ -180,13 +246,13 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
               <span className="text-white font-medium">1</span>
             </div>
             <div className="flex items-center gap-1">
-              <span className={`w-2.5 h-2.5 rounded-full ${isMetro ? 'bg-purple-200/50' : 'bg-blue-200/50'}`}></span>
+              <span className={`w-2.5 h-2.5 rounded-full opacity-50 ${isMetro ? 'bg-purple-200' : isVolvo ? 'bg-blue-200' : isVajra ? 'bg-orange-200' : 'bg-green-200'}`}></span>
               <span className="text-white/80">{upcomingCount}</span>
             </div>
             <span className="text-white/50">|</span>
             <span className="text-white/90 font-medium">{etaToDestination > 0 ? `${etaToDestination}m` : 'Arrived'}</span>
           </div>
-        ) : (
+        ) : collapseState === 'expanded' ? (
           <div className="hidden md:flex items-center gap-4 text-white/90 text-sm">
             <div className="flex items-center gap-1">
               <span>🚏</span>
@@ -205,11 +271,10 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
               </div>
             )}
           </div>
-        )}
+        ) : null}
         
         {/* Right: Live Status + Toggle + Close */}
         <div className="flex items-center gap-2">
-          {/* Live Status */}
           <div className={`flex items-center gap-1.5 px-2 py-1 rounded-full text-xs ${
             isConnected ? 'bg-green-500/20 text-green-100' : 'bg-gray-500/20 text-gray-300'
           }`}>
@@ -217,14 +282,15 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
             <span className="hidden sm:inline">{isConnected ? 'Live' : 'Offline'}</span>
           </div>
 
-          {/* Toggle Button */}
           <button
-            onClick={toggleCollapse}
+            onClick={cycleCollapseState}
             className="p-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-            title={isCollapsed ? 'Expand' : 'Collapse'}
+            title={collapseState === 'expanded' ? 'Minimize' : collapseState === 'mini' ? 'Collapse' : 'Expand'}
           >
             <svg 
-              className={`w-5 h-5 transition-transform duration-300 ${isCollapsed ? '' : 'rotate-180'}`} 
+              className={`w-5 h-5 transition-transform duration-300 ${
+                collapseState === 'expanded' ? 'rotate-180' : collapseState === 'mini' ? 'rotate-90' : ''
+              }`} 
               fill="none" 
               viewBox="0 0 24 24" 
               stroke="currentColor"
@@ -233,7 +299,6 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
             </svg>
           </button>
           
-          {/* Close Button */}
           <button
             onClick={onClose}
             className="p-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
@@ -245,8 +310,69 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
         </div>
       </div>
 
+      {/* Mini View - Progress + Current/Next + ETA */}
+      {collapseState === 'mini' && (
+        <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
+          {/* Progress Bar */}
+          <div className="mb-3">
+            <div className="flex items-center justify-between text-xs mb-1">
+              <span className="text-gray-500">Progress</span>
+              <span className={`font-bold ${accentColorClass}`}>{progressPercent}%</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+              <div
+                className={`h-2.5 rounded-full transition-all duration-500 ${progressBgClass}`}
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+            <div className="flex justify-between mt-1 text-xs text-gray-500">
+              <span>✓ {passedCount} passed</span>
+              <span>○ {upcomingCount} remaining</span>
+            </div>
+          </div>
+
+          {/* Current & Next Stop Row */}
+          <div className="flex items-center gap-4 text-sm">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 bg-orange-500 rounded-full animate-pulse flex-shrink-0"></span>
+                <span className="text-orange-600 font-medium truncate">{currentStopName}</span>
+              </div>
+            </div>
+            {nextStopName && (
+              <>
+                <span className="text-gray-400 flex-shrink-0">→</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className={`w-3 h-3 rounded-full flex-shrink-0 ${isMetro ? 'bg-purple-400' : isVolvo ? 'bg-blue-400' : isVajra ? 'bg-orange-400' : 'bg-green-400'}`}></span>
+                    <span className="text-gray-600 truncate">{nextStopName}</span>
+                    {nextStopEta > 0 && (
+                      <span className={`text-xs font-medium ${accentColorClass}`}>({nextStopEta}m)</span>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* ETA Row */}
+          <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-200">
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-gray-500">🎯 ETA:</span>
+              <span className={`font-bold ${accentColorClass}`}>
+                {etaToDestination > 0 ? `${etaToDestination} min` : 'Arrived'}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-gray-500">Arrival:</span>
+              <span className="font-medium text-gray-700">{predictedArrivalStr}</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Collapsed Mini Info Bar */}
-      {isCollapsed && (
+      {collapseState === 'collapsed' && (
         <div className="px-4 py-1.5 bg-gray-50 border-b border-gray-200 flex items-center justify-between text-xs">
           <div className="flex items-center gap-2">
             <span className="text-orange-600 font-medium">📍 {currentStopName}</span>
@@ -261,16 +387,16 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
         </div>
       )}
 
-      {/* Expandable Content */}
-      {!isCollapsed && (
+      {/* Expanded Content */}
+      {collapseState === 'expanded' && (
         <>
-          {/* Visual Timeline - Just Dots */}
+          {/* Visual Timeline */}
           <div className="px-4 py-3 border-b border-gray-100 bg-gray-50 flex-shrink-0">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-4 text-xs">
                 <span className="text-gray-500">Progress:</span>
                 <div className="flex items-center gap-1.5">
-                  <span className={`w-3 h-3 rounded-full ${isMetro ? 'bg-purple-500' : 'bg-green-500'}`}></span>
+                  <span className={`w-3 h-3 rounded-full ${isMetro ? 'bg-purple-500' : isVolvo ? 'bg-blue-500' : isVajra ? 'bg-orange-500' : 'bg-green-500'}`}></span>
                   <span className="text-gray-600">Passed ({passedCount})</span>
                 </div>
                 <div className="flex items-center gap-1.5">
@@ -278,7 +404,7 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
                   <span className="text-gray-600">Current</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className={`w-3 h-3 rounded-full ${isMetro ? 'bg-purple-200' : 'bg-blue-200'}`}></span>
+                  <span className={`w-3 h-3 rounded-full ${isMetro ? 'bg-purple-200' : isVolvo ? 'bg-blue-200' : isVajra ? 'bg-orange-200' : 'bg-green-200'}`}></span>
                   <span className="text-gray-600">Upcoming ({upcomingCount})</span>
                 </div>
               </div>
@@ -287,7 +413,6 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
               </span>
             </div>
 
-            {/* Dot Timeline */}
             <div className="overflow-x-auto py-2">
               <div className="flex items-center min-w-max gap-0.5">
                 {stops.map((stop, index) => {
@@ -297,7 +422,6 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
                   
                   return (
                     <div key={stop.stop_id} className="flex items-center group relative">
-                      {/* Dot */}
                       <div 
                         className={`
                           rounded-full transition-all cursor-pointer
@@ -308,15 +432,11 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
                         title={stop.stop_name}
                         onClick={() => handleStopClick(index)}
                       />
-                      
-                      {/* Tooltip on hover */}
                       <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 hidden group-hover:block z-20 pointer-events-none">
                         <div className="bg-gray-900 text-white text-xs rounded px-2 py-1 whitespace-nowrap">
                           {stop.stop_name}
                         </div>
                       </div>
-                      
-                      {/* Connecting line */}
                       {index < stops.length - 1 && (
                         <div className={`h-0.5 w-3 ${getLineColor(status)}`}></div>
                       )}
@@ -327,7 +447,7 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
             </div>
           </div>
 
-          {/* Stop List with ETA */}
+          {/* Stop List */}
           <div className="flex-1 overflow-y-auto min-h-0">
             <table className="w-full text-sm">
               <thead className="bg-gray-50 sticky top-0">
@@ -365,7 +485,7 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
                           }`}></span>
                           <span className={`text-xs ${
                             status === 'current' ? 'text-orange-600 font-medium' :
-                            status === 'reached' ? 'text-green-600' : 'text-gray-400'
+                            status === 'reached' ? accentColorClass : 'text-gray-400'
                           }`}>
                             {status === 'current' ? '●' : status === 'reached' ? '✓' : '○'}
                           </span>
@@ -384,7 +504,7 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
                       </td>
                       <td className={`px-2 py-1.5 text-right text-xs font-mono ${
                         status === 'current' ? 'text-orange-600 font-semibold' :
-                        status === 'reached' ? 'text-gray-600' : 'text-blue-600'
+                        status === 'reached' ? 'text-gray-600' : accentColorClass
                       }`}>
                         {status === 'upcoming' ? formatRealTime(eta) : timing.actual}
                       </td>
@@ -402,7 +522,6 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
             </table>
           </div>
 
-          {/* Active Vehicles (compact) */}
           {vehicles.length > 0 && (
             <div className="px-4 py-2 border-t border-gray-200 bg-gray-50 flex-shrink-0">
               <div className="flex items-center gap-3 text-xs">
@@ -412,7 +531,7 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose, o
                     <span
                       key={vehicle.id}
                       className={`inline-flex items-center gap-1 px-2 py-0.5 rounded ${
-                        isMetro ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
+                        isMetro ? 'bg-purple-100 text-purple-700' : isVolvo ? 'bg-blue-100 text-blue-700' : isVajra ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'
                       }`}
                     >
                       <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>

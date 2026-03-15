@@ -165,9 +165,10 @@ interface RouteMapProps {
   allRoutes?: Route[];
   focusedStop?: { latitude: number; longitude: number } | null;
   currentStopIndex?: number;
+  onBusClick?: () => void;
 }
 
-export default function RouteMap({ selectedRoute, vehicles, allRoutes = [], focusedStop = null, currentStopIndex = 0 }: RouteMapProps) {
+export default function RouteMap({ selectedRoute, vehicles, allRoutes = [], focusedStop = null, currentStopIndex = 0, onBusClick }: RouteMapProps) {
   // Bangalore center coordinates
   const center: [number, number] = [12.9716, 77.5946];
   
@@ -313,9 +314,14 @@ export default function RouteMap({ selectedRoute, vehicles, allRoutes = [], focu
           
           return (
             <Marker
-              key={`stop-${stop.stop_id}`}
-              position={[stop.latitude, stop.longitude]}
-              icon={createStopIcon(true, index, routeStops.length, selectedRoute?.transport_type)}
+              key="current-bus-position"
+              position={[routeStops[currentStopIndex].latitude, routeStops[currentStopIndex].longitude]}
+              icon={createVehicleIcon(selectedRoute.transport_type || 'bus', selectedRoute.operator)}
+              eventHandlers={{
+                click: () => {
+                  if (onBusClick) onBusClick();
+                }
+              }}
             >
               <Popup>
                 <div className="min-w-[260px] bg-white rounded-lg shadow-lg overflow-hidden" style={{ margin: '-14px -20px' }}>
