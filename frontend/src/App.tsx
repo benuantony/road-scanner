@@ -2,7 +2,8 @@ import { useState, useMemo } from 'react';
 import SearchBar from './components/SearchBar';
 import RouteMap from './components/RouteMap';
 import RouteList from './components/RouteList';
-import LiveTracker from './components/LiveTracker';
+import RouteTimeline from './components/RouteTimeline';
+import AdminPanel from './components/AdminPanel';
 import { useVehicleTracking } from './hooks/useVehicleTracking';
 import { routesApi } from './services/api';
 import { Stop, Route } from './types';
@@ -12,6 +13,8 @@ function App() {
   const [selectedRoute, setSelectedRoute] = useState<Route | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [transportFilter, setTransportFilter] = useState<'all' | 'bus' | 'metro'>('all');
 
   // Get route IDs for WebSocket subscription
   const routeIds = useMemo(() => {
@@ -33,7 +36,7 @@ function App() {
 
   const handleSearch = async (from: Stop, to: Stop, intermediateStops: Stop[]) => {
     setIsLoading(true);
-    setHasSearched(true); // This triggers the hero collapse - one way, never expands again
+    setHasSearched(true);
     setSelectedRoute(null);
 
     try {
@@ -41,7 +44,6 @@ function App() {
       const foundRoutes = await routesApi.find(from.id, to.id, stopIds);
       setRoutes(foundRoutes);
       
-      // Auto-select first route if only one found
       if (foundRoutes.length === 1) {
         setSelectedRoute(foundRoutes[0]);
       }
@@ -57,168 +59,160 @@ function App() {
     setSelectedRoute(route);
   };
 
+  const handleCloseTimeline = () => {
+    setSelectedRoute(null);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Hero Section - Collapses after first search */}
-      <div 
-        className={`relative transition-all duration-700 ease-in-out overflow-hidden ${
-          hasSearched ? 'h-20' : 'h-[55vh] min-h-[400px]'
-        }`}
-      >
-        {/* Background Image */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-4.0.3&auto=format&fit=crop&w=2069&q=80')`,
-          }}
-        >
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-blue-900/80 via-blue-800/70 to-blue-900/90" />
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      {/* Header - Always visible */}
+      <header className="bg-white border-b border-gray-200 shadow-sm px-4 py-3 flex items-center justify-between sticky top-0 z-50">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">🚌</span>
+            <span className="text-2xl">🚇</span>
+          </div>
+          <div>
+            <h1 className="font-bold text-gray-800 text-lg">
+              Bangalore Transit
+            </h1>
+            <p className="text-gray-500 text-xs">Bus & Metro Routes</p>
+          </div>
         </div>
+        <div className="flex items-center gap-3">
+          {/* Admin Button */}
+          <button
+            onClick={() => setIsAdminOpen(true)}
+            className="flex items-center gap-2 text-sm text-gray-600 bg-gray-100 px-3 py-1.5 rounded-lg border border-gray-200 hover:border-blue-300 hover:text-blue-600 transition-all"
+            title="Admin Panel - Import GTFS Data"
+          >
+            <span>⚙️</span>
+            <span className="hidden sm:inline">Admin</span>
+          </button>
+          {/* Live Status */}
+          <div className={`flex items-center gap-2 text-sm px-3 py-1.5 rounded-lg ${
+            isConnected ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500'
+          }`}>
+            <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></span>
+            <span>{isConnected ? 'Live' : 'Offline'}</span>
+          </div>
+        </div>
+      </header>
 
-        {/* Hero Content */}
-        <div className="relative h-full flex flex-col">
-          {/* Header - Always visible */}
-          <header className="px-4 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="text-3xl">🚌</span>
-              <div>
-                <h1 className={`font-bold text-white transition-all duration-500 ${
-                  hasSearched ? 'text-lg' : 'text-xl'
-                }`}>
-                  Tamil Nadu Bus Finder
-                </h1>
-                {!hasSearched && (
-                  <p className="text-blue-200 text-sm">Find bus routes across Tamil Nadu</p>
-                )}
-              </div>
-            </div>
-            {hasSearched && (
-              <div className="flex items-center gap-2 text-sm text-white/80">
-                <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                  {isConnected ? 'Live' : 'Offline'}
-                </span>
-              </div>
-            )}
-          </header>
-
-          {/* Centered Content - Only visible before search */}
-          {!hasSearched && (
-            <div className="flex-1 flex flex-col items-center justify-center px-4 pb-8">
-              <div className="text-center mb-8 animate-fade-in">
-                <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
-                  Where do you want to go?
-                </h2>
-                <p className="text-lg text-blue-100 max-w-xl mx-auto">
-                  Search bus routes connecting Chennai, Coimbatore, Nagercoil and 80+ cities across Tamil Nadu
-                </p>
-              </div>
-              
-              {/* Search Bar - Centered in Hero */}
-              <div className="w-full max-w-4xl animate-slide-up">
-                <SearchBar onSearch={handleSearch} />
-              </div>
-
-              {/* Stats */}
-              <div className="mt-8 flex items-center gap-8 text-white/80 text-sm">
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl">🚏</span>
-                  <div>
-                    <p className="font-semibold text-white">80+</p>
-                    <p>Bus Stops</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl">🛤️</span>
-                  <div>
-                    <p className="font-semibold text-white">20+</p>
-                    <p>Routes</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl">📍</span>
-                  <div>
-                    <p className="font-semibold text-white">Live</p>
-                    <p>Tracking</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+      {/* Search Bar */}
+      <div className="bg-white border-b border-gray-200 px-4 py-4 shadow-sm">
+        <div className="container mx-auto max-w-6xl">
+          <SearchBar onSearch={handleSearch} />
         </div>
       </div>
 
-      {/* Search Bar - Below collapsed header after search */}
-      {hasSearched && (
-        <div className="bg-white shadow-md border-b border-gray-200 px-4 py-4 animate-fade-in">
-          <div className="container mx-auto">
-            <SearchBar onSearch={handleSearch} />
-          </div>
-        </div>
-      )}
-
-      {/* Main Content - Only visible after search */}
-      {hasSearched && (
-        <main className="flex-1 container mx-auto px-4 py-6 animate-fade-in">
-          {/* Map and Route List */}
-          <div className="grid grid-cols-1 lg:grid-cols-10 gap-6 mb-6">
-            {/* Map - 70% */}
-            <div className="lg:col-span-7 h-[500px] bg-white rounded-xl shadow-md overflow-hidden">
-              <RouteMap
-                selectedRoute={selectedRoute}
-                vehicles={filteredVehicles}
-                allRoutes={routes}
-              />
-            </div>
-
-            {/* Route List - 30% */}
-            <div className="lg:col-span-3 h-[500px] bg-white rounded-xl shadow-md overflow-hidden">
-              <RouteList
-                routes={routes}
-                selectedRoute={selectedRoute}
-                onSelectRoute={handleSelectRoute}
-                isLoading={isLoading}
-              />
-            </div>
-          </div>
-
-          {/* Live Tracker */}
-          {(routes.length > 0 || vehicles.length > 0) && (
-            <LiveTracker
-              vehicles={filteredVehicles}
-              selectedRoute={selectedRoute}
-              isConnected={isConnected}
-            />
-          )}
-
-          {/* No results message */}
-          {!isLoading && routes.length === 0 && (
-            <div className="bg-white rounded-xl shadow-md p-8 text-center">
-              <div className="max-w-md mx-auto">
-                <span className="text-5xl mb-4 block">🔍</span>
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                  No routes found
-                </h3>
-                <p className="text-gray-500">
-                  Try searching with different origin and destination stops.
-                  We currently cover routes connecting Chennai, Coimbatore, Nagercoil and surrounding areas.
-                </p>
+      {/* Main Content */}
+      <main className="flex-1 flex flex-col">
+        {!hasSearched ? (
+          /* Welcome Screen */
+          <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 p-8">
+            <div className="text-center max-w-2xl">
+              <div className="flex justify-center gap-4 mb-6">
+                <span className="text-6xl animate-bounce" style={{ animationDelay: '0ms' }}>🚌</span>
+                <span className="text-6xl animate-bounce" style={{ animationDelay: '100ms' }}>🚇</span>
+              </div>
+              <h2 className="text-3xl font-bold text-gray-800 mb-4">
+                Find Your Route in Bangalore
+              </h2>
+              <p className="text-gray-600 text-lg mb-8">
+                Search for BMTC bus and Namma Metro routes. Get live tracking, ETA, and route details.
+              </p>
+              <div className="flex justify-center gap-6 text-sm">
+                <div className="bg-white rounded-xl p-4 shadow-md border border-gray-100">
+                  <div className="text-3xl mb-2">🚏</div>
+                  <p className="font-semibold text-gray-800">9,000+</p>
+                  <p className="text-gray-500">Bus Stops</p>
+                </div>
+                <div className="bg-white rounded-xl p-4 shadow-md border border-gray-100">
+                  <div className="text-3xl mb-2">🛤️</div>
+                  <p className="font-semibold text-gray-800">4,000+</p>
+                  <p className="text-gray-500">Routes</p>
+                </div>
+                <div className="bg-white rounded-xl p-4 shadow-md border border-gray-100">
+                  <div className="text-3xl mb-2">📍</div>
+                  <p className="font-semibold text-green-600">Live</p>
+                  <p className="text-gray-500">Tracking</p>
+                </div>
               </div>
             </div>
-          )}
-        </main>
+          </div>
+        ) : (
+          /* Results View */
+          <div className="flex-1 flex flex-col">
+            {/* Map and Route List */}
+            <div className="flex-1 flex min-h-0">
+              {/* Map - Takes most of the space */}
+              <div className="flex-1 relative">
+                <RouteMap
+                  selectedRoute={selectedRoute}
+                  vehicles={filteredVehicles}
+                  allRoutes={routes}
+                />
+              </div>
+
+              {/* Route List - Right sidebar */}
+              <div className="w-80 border-l border-gray-200 bg-white overflow-hidden flex flex-col">
+                <RouteList
+                  routes={routes}
+                  selectedRoute={selectedRoute}
+                  onSelectRoute={handleSelectRoute}
+                  isLoading={isLoading}
+                  transportFilter={transportFilter}
+                  onTransportFilterChange={setTransportFilter}
+                />
+              </div>
+            </div>
+
+            {/* Route Timeline - Bottom panel when route is selected */}
+            {selectedRoute && (
+              <RouteTimeline
+                route={selectedRoute}
+                vehicles={filteredVehicles}
+                isConnected={isConnected}
+                onClose={handleCloseTimeline}
+              />
+            )}
+
+            {/* No results message */}
+            {!isLoading && routes.length === 0 && (
+              <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm">
+                <div className="bg-white rounded-2xl shadow-xl p-8 text-center max-w-md mx-4 border border-gray-100">
+                  <span className="text-5xl mb-4 block">🔍</span>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                    No routes found
+                  </h3>
+                  <p className="text-gray-500">
+                    Try searching with different stops. Make sure both stops are on the same bus or metro line.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </main>
+
+      {/* Footer - Only on welcome screen */}
+      {!hasSearched && (
+        <footer className="bg-white border-t border-gray-200 py-4">
+          <div className="container mx-auto px-4 text-center text-sm text-gray-500">
+            <p>
+              <span className="font-semibold text-gray-700">Bangalore Transit</span>
+              {' '}- BMTC Bus & Namma Metro Route Finder
+            </p>
+            <p className="mt-1 text-xs text-gray-400">
+              Built with React, Node.js, PostgreSQL & OpenStreetMap
+            </p>
+          </div>
+        </footer>
       )}
 
-      {/* Footer */}
-      <footer className={`bg-gray-800 text-gray-400 py-4 mt-auto ${!hasSearched ? 'absolute bottom-0 w-full' : ''}`}>
-        <div className="container mx-auto px-4 text-center text-sm">
-          <p>Tamil Nadu Bus Finder - Real-time Bus Routes & Tracking</p>
-          <p className="mt-1 text-gray-500">
-            Built with React, Node.js, PostgreSQL & OpenStreetMap
-          </p>
-        </div>
-      </footer>
+      {/* Admin Panel Modal */}
+      <AdminPanel isOpen={isAdminOpen} onClose={() => setIsAdminOpen(false)} />
     </div>
   );
 }

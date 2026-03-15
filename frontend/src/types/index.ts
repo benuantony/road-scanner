@@ -19,6 +19,7 @@ export interface RouteStop {
   sequence: number;
   distance: number;
   time_offset: number;
+  arrival_offset?: number; // ETA in minutes from route start
 }
 
 // Route type

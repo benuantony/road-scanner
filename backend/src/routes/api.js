@@ -4,6 +4,7 @@ const router = express.Router();
 const stopsController = require('../controllers/stopsController');
 const routesController = require('../controllers/routesController');
 const vehiclesController = require('../controllers/vehiclesController');
+const gtfsController = require('../controllers/gtfsController');
 
 // =====================================================
 // STOPS ROUTES
@@ -56,5 +57,25 @@ router.get('/vehicles/:id', vehiclesController.getVehicleById);
 // Get vehicles for a specific route
 // GET /api/routes/:routeId/vehicles
 router.get('/routes/:routeId/vehicles', vehiclesController.getVehiclesByRoute);
+
+// =====================================================
+// GTFS IMPORT ROUTES
+// =====================================================
+
+// Get data status
+// GET /api/gtfs/status
+router.get('/gtfs/status', gtfsController.getStatus);
+
+// Get available GTFS sources
+// GET /api/gtfs/sources
+router.get('/gtfs/sources', gtfsController.getSources);
+
+// Import GTFS data from URL
+// POST /api/gtfs/import { url: "https://...", source: "bmtc" }
+router.post('/gtfs/import', gtfsController.importGTFS);
+
+// Clear all data
+// DELETE /api/gtfs/data
+router.delete('/gtfs/data', gtfsController.clearData);
 
 module.exports = router;

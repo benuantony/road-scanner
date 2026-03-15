@@ -11,167 +11,171 @@ export default function LiveTracker({
   selectedRoute,
   isConnected,
 }: LiveTrackerProps) {
-  // Filter vehicles for the selected route
-  const filteredVehicles = selectedRoute
-    ? vehicles.filter((v) => v.route_id === selectedRoute.id)
-    : vehicles;
+  if (vehicles.length === 0) {
+    return (
+      <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="relative">
+            <span className="text-2xl">📍</span>
+            <span className={`absolute -top-1 -right-1 w-3 h-3 rounded-full ${
+              isConnected ? 'bg-cyan-400 animate-pulse' : 'bg-gray-500'
+            }`}></span>
+          </div>
+          <div>
+            <h3 className="font-semibold text-white">Live Vehicle Tracking</h3>
+            <p className="text-xs text-gray-500">
+              {isConnected ? 'Connected to live updates' : 'Connecting...'}
+            </p>
+          </div>
+        </div>
+        <div className="text-center py-6">
+          <p className="text-gray-400">
+            {selectedRoute 
+              ? 'No active buses on this route currently' 
+              : 'Select a route to see live bus positions'}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const formatTime = (timestamp: string) => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString('en-IN', {
+    return new Date(timestamp).toLocaleTimeString('en-IN', {
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit',
     });
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md">
+    <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
       {/* Header */}
-      <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="text-xl">🚌</span>
-          <h3 className="font-semibold text-gray-800">Live Bus Tracking</h3>
-          <span
-            className={`flex items-center gap-1.5 text-xs px-2 py-1 rounded-full ${
-              isConnected
-                ? 'bg-green-100 text-green-700'
-                : 'bg-red-100 text-red-700'
-            }`}
-          >
-            <span
-              className={`w-2 h-2 rounded-full ${
-                isConnected ? 'bg-green-500 animate-pulse' : 'bg-red-500'
-              }`}
-            />
-            {isConnected ? 'Live' : 'Disconnected'}
-          </span>
+      <div className="p-4 border-b border-gray-800 bg-gray-900/80 backdrop-blur-sm">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <span className="text-2xl filter drop-shadow-lg">🚌</span>
+              <span className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-gray-900 ${
+                isConnected ? 'bg-cyan-400 animate-pulse' : 'bg-gray-500'
+              }`}></span>
+            </div>
+            <div>
+              <h3 className="font-semibold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                Live Bus Tracking
+              </h3>
+              <p className="text-xs text-gray-500">
+                {vehicles.length} active {vehicles.length === 1 ? 'bus' : 'buses'}
+              </p>
+            </div>
+          </div>
+          <div className={`flex items-center gap-2 text-sm px-3 py-1.5 rounded-full ${
+            isConnected 
+              ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30' 
+              : 'bg-gray-800 text-gray-500 border border-gray-700'
+          }`}>
+            <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-cyan-400 animate-pulse' : 'bg-gray-500'}`}></span>
+            {isConnected ? 'Live' : 'Offline'}
+          </div>
         </div>
-        <span className="text-sm text-gray-500">
-          {filteredVehicles.length} bus{filteredVehicles.length !== 1 ? 'es' : ''} active
-        </span>
       </div>
 
-      {/* Vehicle list */}
-      <div className="max-h-64 overflow-y-auto">
-        {filteredVehicles.length === 0 ? (
-          <div className="p-8 text-center">
-            <span className="text-4xl block mb-3">🚏</span>
-            <p className="text-gray-500">
-              {selectedRoute
-                ? 'No buses currently on this route'
-                : 'Select a route to see live bus tracking'}
-            </p>
-          </div>
-        ) : (
-          <div className="divide-y divide-gray-100">
-            {filteredVehicles.map((vehicle) => {
-              const routeStops = selectedRoute?.stops || [];
-              const currentStopIndex = routeStops.findIndex(
-                (s) => s.stop_id === vehicle.current_stop_id
-              );
+      {/* Vehicles Grid */}
+      <div className="p-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {vehicles.map((vehicle) => (
+            <div
+              key={vehicle.id}
+              className="bg-gray-800/50 rounded-xl p-4 border border-gray-700/50 hover:border-cyan-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/5"
+            >
+              {/* Vehicle Header */}
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg filter drop-shadow-lg">🚌</span>
+                  <span className="font-bold text-cyan-400">{vehicle.vehicle_number}</span>
+                </div>
+                <span className={`text-xs px-2 py-0.5 rounded-full ${
+                  vehicle.status === 'running' 
+                    ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
+                    : vehicle.status === 'delayed'
+                    ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
+                    : 'bg-gray-700/50 text-gray-400 border border-gray-600'
+                }`}>
+                  {vehicle.status.charAt(0).toUpperCase() + vehicle.status.slice(1)}
+                </span>
+              </div>
 
-              return (
-                <div
-                  key={vehicle.id}
-                  className="p-4 hover:bg-gray-50 transition-colors"
-                >
-                  <div className="flex items-start gap-3">
-                    <span className="text-xl p-2 rounded-lg bg-green-100">
-                      🚌
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-medium text-gray-800">
-                          {vehicle.vehicle_number}
-                        </span>
-                        <span
-                          className={`text-xs px-2 py-0.5 rounded-full ${
-                            vehicle.status === 'running'
-                              ? 'bg-green-100 text-green-700'
-                              : vehicle.status === 'delayed'
-                              ? 'bg-amber-100 text-amber-700'
-                              : 'bg-gray-100 text-gray-700'
-                          }`}
-                        >
-                          {vehicle.status === 'running' ? '● Running' : vehicle.status}
-                        </span>
-                      </div>
-                      <p className="text-sm text-gray-500 mt-0.5">
-                        {vehicle.route_number} - {vehicle.route_name}
-                      </p>
+              {/* Route Info */}
+              <div className="mb-3">
+                <p className="text-sm text-gray-300">{vehicle.route_name}</p>
+              </div>
 
-                      {/* Progress visualization */}
-                      <div className="mt-3">
-                        <div className="flex items-center text-xs text-gray-500 mb-1">
-                          <span className="font-medium text-gray-700">
-                            📍 {vehicle.current_stop_name}
-                          </span>
-                          {vehicle.next_stop_name && (
-                            <>
-                              <span className="mx-2 text-green-500">→</span>
-                              <span>{vehicle.next_stop_name}</span>
-                            </>
-                          )}
-                        </div>
-                        <div className="relative w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div
-                            className="absolute h-full rounded-full transition-all duration-500 progress-bar bg-green-500"
-                            style={{ width: `${vehicle.progress_percent}%` }}
-                          />
-                        </div>
-
-                        {/* Route stops indicator */}
-                        {selectedRoute && currentStopIndex !== -1 && (
-                          <div className="flex items-center justify-between mt-2 text-xs">
-                            <div className="flex items-center gap-1 overflow-hidden">
-                              {routeStops.slice(0, 6).map((stop, index) => (
-                                <div
-                                  key={stop.stop_id}
-                                  className="flex items-center"
-                                >
-                                  <div
-                                    className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                                      index < currentStopIndex
-                                        ? 'bg-green-400'
-                                        : index === currentStopIndex
-                                        ? 'bg-green-500 ring-2 ring-green-200'
-                                        : 'bg-gray-300'
-                                    }`}
-                                    title={stop.stop_name}
-                                  />
-                                  {index < routeStops.length - 1 &&
-                                    index < 5 && (
-                                      <div
-                                        className={`w-4 h-0.5 ${
-                                          index < currentStopIndex
-                                            ? 'bg-green-400'
-                                            : 'bg-gray-300'
-                                        }`}
-                                      />
-                                    )}
-                                </div>
-                              ))}
-                              {routeStops.length > 6 && (
-                                <span className="text-gray-400 ml-1">
-                                  +{routeStops.length - 6} more
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <span className="text-xs text-gray-400 whitespace-nowrap">
-                      {formatTime(vehicle.last_updated)}
-                    </span>
+              {/* Current & Next Stop */}
+              <div className="space-y-2 mb-4">
+                <div className="flex items-start gap-2">
+                  <span className="text-cyan-400 text-xs mt-0.5">📍</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-gray-500">Current Stop</p>
+                    <p className="text-sm text-white truncate">{vehicle.current_stop_name}</p>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        )}
+                {vehicle.next_stop_name && (
+                  <div className="flex items-start gap-2">
+                    <span className="text-purple-400 text-xs mt-0.5">➡️</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-gray-500">Next Stop</p>
+                      <p className="text-sm text-gray-300 truncate">{vehicle.next_stop_name}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Progress Bar */}
+              <div>
+                <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                  <span>Route Progress</span>
+                  <span className="text-cyan-400 font-medium">{Math.round(vehicle.progress_percent)}%</span>
+                </div>
+                <div className="w-full bg-gray-700 rounded-full h-2 overflow-hidden">
+                  <div
+                    className="h-2 rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 transition-all duration-500 relative"
+                    style={{ width: `${vehicle.progress_percent}%` }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Last Updated */}
+              <div className="mt-3 pt-3 border-t border-gray-700/50 flex items-center justify-between">
+                <span className="text-xs text-gray-600">Last updated</span>
+                <span className="text-xs text-gray-400">{formatTime(vehicle.last_updated)}</span>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
+
+      {/* Footer Stats */}
+      {vehicles.length > 0 && (
+        <div className="px-4 py-3 border-t border-gray-800 bg-gray-900/50">
+          <div className="flex items-center justify-between text-xs text-gray-500">
+            <div className="flex items-center gap-4">
+              <span className="flex items-center gap-1">
+                <span className="w-2 h-2 bg-green-400 rounded-full"></span>
+                Running: {vehicles.filter(v => v.status === 'running').length}
+              </span>
+              {vehicles.some(v => v.status === 'delayed') && (
+                <span className="flex items-center gap-1">
+                  <span className="w-2 h-2 bg-yellow-400 rounded-full"></span>
+                  Delayed: {vehicles.filter(v => v.status === 'delayed').length}
+                </span>
+              )}
+            </div>
+            <span className="text-gray-600">
+              Updates every 5 seconds
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,903 +1,533 @@
--- Tamil Nadu Bus Routes - Comprehensive Seed Data (Bus Only)
--- Focus: Chennai, Coimbatore, Nagercoil, Trichy, Madurai - ALL bus stops
+-- Bangalore BMTC Bus Routes - GTFS Based Seed Data
+-- Real bus stops and routes from Bangalore Metropolitan Transport Corporation
+-- Generated with accurate coordinates and ETA information
 
 -- =====================================================
--- STOPS (Comprehensive bus stops for all major cities)
+-- STOPS (Bangalore BMTC Bus Stops - Major Terminals & Stops)
 -- =====================================================
 
 INSERT INTO stops (name, name_tamil, latitude, longitude, district, stop_type) VALUES
 
 -- =====================================================
--- CHENNAI CITY BUS STOPS (Comprehensive - 45+ stops)
+-- MAJOR BUS TERMINALS / TTMC
 -- =====================================================
-('Chennai CMBT (Koyambedu)', 'சென்னை கோயம்பேடு', 13.0694, 80.1948, 'Chennai', 'bus'),
-('Chennai Tambaram', 'தாம்பரம்', 12.9249, 80.1000, 'Chennai', 'bus'),
-('Chennai Adyar', 'அடையார்', 13.0012, 80.2565, 'Chennai', 'bus'),
-('Chennai T.Nagar', 'தியாகராய நகர்', 13.0418, 80.2341, 'Chennai', 'bus'),
-('Chennai Anna Nagar', 'அண்ணா நகர்', 13.0850, 80.2101, 'Chennai', 'bus'),
-('Chennai Guindy', 'கிண்டி', 13.0067, 80.2206, 'Chennai', 'bus'),
-('Chennai Vadapalani', 'வடபழனி', 13.0499, 80.2121, 'Chennai', 'bus'),
-('Chennai Velachery', 'வேளச்சேரி', 12.9815, 80.2180, 'Chennai', 'bus'),
-('Chennai Porur', 'பூரூர்', 13.0382, 80.1565, 'Chennai', 'bus'),
-('Chennai Ambattur', 'அம்பத்தூர்', 13.1143, 80.1548, 'Chennai', 'bus'),
-('Chennai Avadi', 'ஆவடி', 13.1067, 80.1099, 'Chennai', 'bus'),
-('Chennai Perambur', 'பெரம்பூர்', 13.1130, 80.2340, 'Chennai', 'bus'),
-('Chennai Broadway', 'பிராட்வே', 13.0878, 80.2785, 'Chennai', 'bus'),
-('Chennai Parrys Corner', 'பாரிஸ் கார்னர்', 13.0894, 80.2867, 'Chennai', 'bus'),
-('Chennai Egmore', 'எழும்பூர்', 13.0732, 80.2609, 'Chennai', 'bus'),
-('Chennai Chromepet', 'குரோம்பேட்டை', 12.9516, 80.1462, 'Chennai', 'bus'),
-('Chennai Pallavaram', 'பல்லாவரம்', 12.9675, 80.1491, 'Chennai', 'bus'),
-('Chennai Medavakkam', 'மேடவாக்கம்', 12.9188, 80.1924, 'Chennai', 'bus'),
-('Chennai Sholinganallur', 'சோளிங்கநல்லூர்', 12.9010, 80.2279, 'Chennai', 'bus'),
-('Chennai OMR Thoraipakkam', 'தோரைப்பாக்கம்', 12.9387, 80.2337, 'Chennai', 'bus'),
-('Chennai ECR Thiruvanmiyur', 'திருவான்மியூர்', 12.9830, 80.2594, 'Chennai', 'bus'),
-('Chennai Mylapore', 'மயிலாப்பூர்', 13.0368, 80.2676, 'Chennai', 'bus'),
-('Chennai Nungambakkam', 'நுங்கம்பாக்கம்', 13.0569, 80.2425, 'Chennai', 'bus'),
-('Chennai Kodambakkam', 'கோடம்பாக்கம்', 13.0524, 80.2255, 'Chennai', 'bus'),
-('Chennai Ashok Nagar', 'அசோக் நகர்', 13.0381, 80.2118, 'Chennai', 'bus'),
-('Chennai Kilpauk', 'கிளபாக்', 13.0847, 80.2421, 'Chennai', 'bus'),
--- Additional Chennai stops
-('Chennai Besant Nagar', 'பெசன்ட் நகர்', 13.0002, 80.2668, 'Chennai', 'bus'),
-('Chennai Royapettah', 'ராயபேட்டை', 13.0531, 80.2609, 'Chennai', 'bus'),
-('Chennai Triplicane', 'திருவல்லிக்கேணி', 13.0580, 80.2780, 'Chennai', 'bus'),
-('Chennai Mandaveli', 'மண்டவெளி', 13.0210, 80.2650, 'Chennai', 'bus'),
-('Chennai Saidapet', 'சைதாப்பேட்டை', 13.0220, 80.2240, 'Chennai', 'bus'),
-('Chennai Teynampet', 'தேனாம்பேட்டை', 13.0400, 80.2500, 'Chennai', 'bus'),
-('Chennai Alandur', 'ஆலந்தூர்', 12.9990, 80.2010, 'Chennai', 'bus'),
-('Chennai Nanganallur', 'நாங்கநல்லூர்', 12.9810, 80.1870, 'Chennai', 'bus'),
-('Chennai Virugambakkam', 'விருகம்பாக்கம்', 13.0550, 80.1920, 'Chennai', 'bus'),
-('Chennai Mogappair', 'மோகப்பேர்', 13.0860, 80.1780, 'Chennai', 'bus'),
-('Chennai Padi', 'பாடி', 13.1050, 80.1900, 'Chennai', 'bus'),
-('Chennai Kolathur', 'கோளத்தூர்', 13.1230, 80.2150, 'Chennai', 'bus'),
-('Chennai Villivakkam', 'வில்லிவாக்கம்', 13.1070, 80.2130, 'Chennai', 'bus'),
-('Chennai Tondiarpet', 'தொண்டியார்பேட்டை', 13.1280, 80.2770, 'Chennai', 'bus'),
-('Chennai Washermanpet', 'வண்ணாரப்பேட்டை', 13.1130, 80.2720, 'Chennai', 'bus'),
-('Chennai Madhavaram', 'மாதவரம்', 13.1490, 80.2370, 'Chennai', 'bus'),
-('Chennai Poonamallee', 'பூநமல்லி', 13.0460, 80.0940, 'Chennai', 'bus'),
-('Chennai Kundrathur', 'குன்றத்தூர்', 12.9960, 80.0990, 'Chennai', 'bus'),
+('Kempegowda Bus Station (Majestic)', 'ಮೆಜೆಸ್ಟಿಕ್', 12.9778, 77.5714, 'Bangalore Central', 'bus'),
+('Shivajinagar Bus Station', 'ಶಿವಾಜಿನಗರ', 12.9857, 77.6057, 'Bangalore Central', 'bus'),
+('KR Market Bus Station', 'ಕೆ.ಆರ್. ಮಾರ್ಕೆಟ್', 12.9631, 77.5775, 'Bangalore Central', 'bus'),
+('Shantinagar Bus Station', 'ಶಾಂತಿನಗರ', 12.9534, 77.5994, 'Bangalore Central', 'bus'),
+('Banashankari TTMC', 'ಬನಶಂಕರಿ', 12.9255, 77.5468, 'Bangalore South', 'bus'),
+('Jayanagar 4th Block TTMC', 'ಜಯನಗರ', 12.9308, 77.5838, 'Bangalore South', 'bus'),
+('Vijayanagar TTMC', 'ವಿಜಯನಗರ', 12.9707, 77.5368, 'Bangalore West', 'bus'),
+('Yeshwanthpur TTMC', 'ಯಶವಂತಪುರ', 13.0285, 77.5381, 'Bangalore North', 'bus'),
+('Kengeri TTMC', 'ಕೆಂಗೇರಿ', 12.9135, 77.4828, 'Bangalore South', 'bus'),
+('Whitefield TTMC', 'ವೈಟ್‌ಫೀಲ್ಡ್', 12.9698, 77.7500, 'Bangalore East', 'bus'),
+('Electronic City Bus Station', 'ಎಲೆಕ್ಟ್ರಾನಿಕ್ ಸಿಟಿ', 12.8456, 77.6603, 'Bangalore South', 'bus'),
+('Silk Board Junction', 'ಸಿಲ್ಕ್ ಬೋರ್ಡ್', 12.9177, 77.6227, 'Bangalore South', 'bus'),
+('Marathahalli', 'ಮಾರತಹಳ್ಳಿ', 12.9591, 77.7012, 'Bangalore East', 'bus'),
+('Hebbal', 'ಹೆಬ್ಬಾಳ', 13.0358, 77.5970, 'Bangalore North', 'bus'),
+('ITPL (International Tech Park)', 'ಐಟಿಪಿಎಲ್', 12.9854, 77.7316, 'Bangalore East', 'bus'),
 
 -- =====================================================
--- COIMBATORE CITY BUS STOPS (Comprehensive - 30+ stops)
+-- KORAMANGALA AREA
 -- =====================================================
-('Coimbatore Gandhipuram', 'கோவை காந்திபுரம்', 11.0168, 76.9558, 'Coimbatore', 'bus'),
-('Coimbatore Ukkadam', 'கோவை உக்கடம்', 10.9925, 76.9614, 'Coimbatore', 'bus'),
-('Coimbatore Singanallur', 'சிங்காநல்லூர்', 11.0070, 77.0300, 'Coimbatore', 'bus'),
-('Coimbatore RS Puram', 'ஆர்.எஸ்.புரம்', 11.0045, 76.9495, 'Coimbatore', 'bus'),
-('Coimbatore Peelamedu', 'பீளமேடு', 11.0253, 77.0106, 'Coimbatore', 'bus'),
-('Coimbatore Saibaba Colony', 'சாய்பாபா காலனி', 11.0280, 76.9680, 'Coimbatore', 'bus'),
-('Coimbatore Race Course', 'ரேஸ் கோர்ஸ்', 11.0089, 76.9739, 'Coimbatore', 'bus'),
-('Coimbatore Town Hall', 'டவுன் ஹால்', 10.9967, 76.9600, 'Coimbatore', 'bus'),
-('Coimbatore Hopes College', 'ஹோப்ஸ் கல்லூரி', 11.0210, 77.0020, 'Coimbatore', 'bus'),
-('Coimbatore Kuniyamuthur', 'குணியமுத்தூர்', 10.9634, 76.9467, 'Coimbatore', 'bus'),
-('Coimbatore Vadavalli', 'வடவள்ளி', 11.0210, 76.9050, 'Coimbatore', 'bus'),
-('Coimbatore Thudiyalur', 'துடியலூர்', 11.0570, 76.9320, 'Coimbatore', 'bus'),
-('Coimbatore Saravanampatty', 'சரவணம்பட்டி', 11.0640, 77.0010, 'Coimbatore', 'bus'),
-('Coimbatore Kavundampalayam', 'கவுண்டம்பாளையம்', 11.0410, 76.9420, 'Coimbatore', 'bus'),
-('Coimbatore Ramanathapuram', 'ராமநாதபுரம்', 10.9880, 76.9890, 'Coimbatore', 'bus'),
-('Coimbatore Perur', 'பேரூர்', 10.9680, 76.9100, 'Coimbatore', 'bus'),
-('Coimbatore Podanur', 'பொடநூர்', 10.9550, 77.0180, 'Coimbatore', 'bus'),
-('Coimbatore Irugur', 'இருகூர்', 10.9740, 77.0560, 'Coimbatore', 'bus'),
--- Additional Coimbatore stops
-('Coimbatore Ganapathy', 'கணபதி', 11.0320, 76.9380, 'Coimbatore', 'bus'),
-('Coimbatore Ondipudur', 'ஒன்டிபுடூர்', 11.0470, 77.0340, 'Coimbatore', 'bus'),
-('Coimbatore Kovaipudur', 'கோவைபுதூர்', 10.9480, 76.9160, 'Coimbatore', 'bus'),
-('Coimbatore Vellalore', 'வெள்ளலூர்', 10.9690, 77.0410, 'Coimbatore', 'bus'),
-('Coimbatore Sundarapuram', 'சுந்தரபுரம்', 10.9840, 76.9220, 'Coimbatore', 'bus'),
-('Coimbatore Sungam', 'சுங்கம்', 11.0120, 76.9680, 'Coimbatore', 'bus'),
-('Coimbatore Lakshmi Mills', 'லக்ஷ்மி மில்ஸ்', 11.0080, 76.9520, 'Coimbatore', 'bus'),
-('Coimbatore Big Bazaar Street', 'பிக் பஜார் தெரு', 10.9950, 76.9570, 'Coimbatore', 'bus'),
-('Coimbatore Goldwins', 'கோல்ட்வின்ஸ்', 11.0160, 77.0180, 'Coimbatore', 'bus'),
-('Coimbatore Nava India', 'நவ இந்தியா', 11.0100, 77.0080, 'Coimbatore', 'bus'),
+('Koramangala 1st Block', 'ಕೋರಮಂಗಲ 1ನೇ ಬ್ಲಾಕ್', 12.9352, 77.6245, 'Bangalore South', 'bus'),
+('Koramangala 4th Block', 'ಕೋರಮಂಗಲ 4ನೇ ಬ್ಲಾಕ್', 12.9279, 77.6271, 'Bangalore South', 'bus'),
+('Koramangala 5th Block', 'ಕೋರಮಂಗಲ 5ನೇ ಬ್ಲಾಕ್', 12.9346, 77.6205, 'Bangalore South', 'bus'),
+('Koramangala 6th Block', 'ಕೋರಮಂಗಲ 6ನೇ ಬ್ಲಾಕ್', 12.9341, 77.6148, 'Bangalore South', 'bus'),
+('Koramangala 8th Block', 'ಕೋರಮಂಗಲ 8ನೇ ಬ್ಲಾಕ್', 12.9365, 77.6312, 'Bangalore South', 'bus'),
+('Sony World Junction', 'ಸೋನಿ ವರ್ಲ್ಡ್', 12.9343, 77.6104, 'Bangalore South', 'bus'),
+('Forum Mall Koramangala', 'ಫೋರಂ ಮಾಲ್', 12.9346, 77.6107, 'Bangalore South', 'bus'),
 
 -- =====================================================
--- MADURAI CITY BUS STOPS (Comprehensive - 20+ stops)
+-- INDIRANAGAR / CV RAMAN NAGAR AREA  
 -- =====================================================
-('Madurai Periyar Bus Stand', 'மதுரை பெரியார்', 9.9195, 78.1193, 'Madurai', 'bus'),
-('Madurai Mattuthavani', 'மதுரை மாட்டுதாவணி', 9.9403, 78.1450, 'Madurai', 'bus'),
-('Madurai Arappalayam', 'மதுரை ஆரப்பாளையம்', 9.9350, 78.0950, 'Madurai', 'bus'),
-('Madurai Anna Bus Stand', 'மதுரை அண்ணா', 9.9180, 78.1120, 'Madurai', 'bus'),
-('Madurai Meenakshi Temple', 'மதுரை மீனாட்சி கோவில்', 9.9195, 78.1193, 'Madurai', 'bus'),
-('Madurai Railway Station', 'மதுரை ரயில் நிலையம்', 9.9210, 78.1210, 'Madurai', 'bus'),
-('Madurai Goripalayam', 'கோரிபாளையம்', 9.9140, 78.1280, 'Madurai', 'bus'),
-('Madurai Tallakulam', 'தல்லாக்குளம்', 9.9320, 78.1350, 'Madurai', 'bus'),
-('Madurai KK Nagar', 'கே.கே. நகர்', 9.9450, 78.1080, 'Madurai', 'bus'),
-('Madurai Anna Nagar', 'மதுரை அண்ணா நகர்', 9.9520, 78.1200, 'Madurai', 'bus'),
-('Madurai Villapuram', 'மதுரை வில்லாபுரம்', 9.9050, 78.0920, 'Madurai', 'bus'),
-('Madurai Palanganatham', 'பாலங்காநாதம்', 9.9080, 78.1400, 'Madurai', 'bus'),
-('Madurai Thirunagar', 'திருநகர்', 9.9150, 78.0850, 'Madurai', 'bus'),
-('Madurai Jaihindpuram', 'ஜெய்ஹிந்த்புரம்', 9.9380, 78.1600, 'Madurai', 'bus'),
-('Madurai Bypass Road', 'மதுரை பைபாஸ்', 9.9550, 78.1750, 'Madurai', 'bus'),
-('Madurai Othakadai', 'ஒத்தக்கடை', 9.9620, 78.1520, 'Madurai', 'bus'),
-('Madurai Thideer Nagar', 'திடீர் நகர்', 9.9480, 78.0980, 'Madurai', 'bus'),
-('Madurai TVS Nagar', 'டிவிஎஸ் நகர்', 9.9280, 78.0780, 'Madurai', 'bus'),
+('Indiranagar 100 Feet Road', 'ಇಂದಿರಾನಗರ', 12.9784, 77.6408, 'Bangalore East', 'bus'),
+('Indiranagar Metro Station', 'ಇಂದಿರಾನಗರ ಮೆಟ್ರೋ', 12.9783, 77.6393, 'Bangalore East', 'bus'),
+('CMH Road Indiranagar', 'ಸಿಎಂಹೆಚ್ ರೋಡ್', 12.9818, 77.6407, 'Bangalore East', 'bus'),
+('Domlur', 'ಡೋಮ್ಲೂರ್', 12.9610, 77.6387, 'Bangalore East', 'bus'),
+('Old Airport Road Domlur', 'ಹಳೆ ವಿಮಾನ ನಿಲ್ದಾಣ ರಸ್ತೆ', 12.9588, 77.6421, 'Bangalore East', 'bus'),
+('HAL Airport', 'ಹೆಚ್‌ಎಎಲ್ ವಿಮಾನ ನಿಲ್ದಾಣ', 12.9499, 77.6682, 'Bangalore East', 'bus'),
+('CV Raman Nagar', 'ಸಿವಿ ರಾಮನ್ ನಗರ', 12.9849, 77.6633, 'Bangalore East', 'bus'),
 
 -- =====================================================
--- TRICHY CITY BUS STOPS (Comprehensive - 20+ stops)
+-- HSR LAYOUT / BTM LAYOUT AREA
 -- =====================================================
-('Trichy Central Bus Stand', 'திருச்சி', 10.8055, 78.6856, 'Tiruchirappalli', 'bus'),
-('Trichy Chatram Bus Stand', 'திருச்சி சத்திரம்', 10.8150, 78.6970, 'Tiruchirappalli', 'bus'),
-('Trichy Srirangam', 'ஸ்ரீரங்கம்', 10.8627, 78.6871, 'Tiruchirappalli', 'bus'),
-('Trichy Cantonment', 'திருச்சி கன்டோன்மென்ட்', 10.8240, 78.6750, 'Tiruchirappalli', 'bus'),
-('Trichy Junction', 'திருச்சி ஜங்ஷன்', 10.7905, 78.6870, 'Tiruchirappalli', 'bus'),
-('Trichy Thillai Nagar', 'தில்லை நகர்', 10.8090, 78.6920, 'Tiruchirappalli', 'bus'),
-('Trichy KK Nagar', 'திருச்சி கே.கே. நகர்', 10.7980, 78.6750, 'Tiruchirappalli', 'bus'),
-('Trichy Woraiyur', 'வொறையூர்', 10.8320, 78.6650, 'Tiruchirappalli', 'bus'),
-('Trichy Thiruverumbur', 'திருவெறும்பூர்', 10.7830, 78.7180, 'Tiruchirappalli', 'bus'),
-('Trichy Anna Nagar', 'திருச்சி அண்ணா நகர்', 10.7950, 78.6620, 'Tiruchirappalli', 'bus'),
-('Trichy Puthur', 'புத்தூர்', 10.8180, 78.7050, 'Tiruchirappalli', 'bus'),
-('Trichy Tennur', 'தென்னூர்', 10.7890, 78.7020, 'Tiruchirappalli', 'bus'),
-('Trichy Khajamalai', 'கஜாமலை', 10.8050, 78.7150, 'Tiruchirappalli', 'bus'),
-('Trichy Ponmalai', 'பொன்மலை', 10.7760, 78.6980, 'Tiruchirappalli', 'bus'),
-('Trichy Palakkarai', 'பாலக்கரை', 10.8100, 78.7000, 'Tiruchirappalli', 'bus'),
-('Trichy Thuvakudi', 'துவாக்குடி', 10.8050, 78.7350, 'Tiruchirappalli', 'bus'),
-('Trichy Senthaneerpuram', 'செந்தானீர்புரம்', 10.8270, 78.7200, 'Tiruchirappalli', 'bus'),
-('Trichy Crawford', 'கிராஃபர்ட்', 10.8150, 78.6880, 'Tiruchirappalli', 'bus'),
+('HSR Layout BDA Complex', 'ಎಚ್‌ಎಸ್‌ಆರ್ ಲೇಔಟ್', 12.9116, 77.6389, 'Bangalore South', 'bus'),
+('HSR Layout Sector 1', 'ಎಚ್‌ಎಸ್‌ಆರ್ ಸೆಕ್ಟರ್ 1', 12.9147, 77.6351, 'Bangalore South', 'bus'),
+('HSR Layout Sector 2', 'ಎಚ್‌ಎಸ್‌ಆರ್ ಸೆಕ್ಟರ್ 2', 12.9134, 77.6425, 'Bangalore South', 'bus'),
+('HSR Layout 27th Main', 'ಎಚ್‌ಎಸ್‌ಆರ್ 27ನೇ ಮೇನ್', 12.9089, 77.6447, 'Bangalore South', 'bus'),
+('BTM Layout 1st Stage', 'ಬಿಟಿಎಂ ಲೇಔಟ್', 12.9166, 77.6101, 'Bangalore South', 'bus'),
+('BTM Layout 2nd Stage', 'ಬಿಟಿಎಂ 2ನೇ ಸ್ಟೇಜ್', 12.9177, 77.6185, 'Bangalore South', 'bus'),
+('Madiwala', 'ಮಾದಿವಾಳ', 12.9218, 77.6168, 'Bangalore South', 'bus'),
+('Bommanahalli', 'ಬೊಮ್ಮನಹಳ್ಳಿ', 12.9029, 77.6185, 'Bangalore South', 'bus'),
 
 -- =====================================================
--- NAGERCOIL / KANYAKUMARI BUS STOPS (Comprehensive - 20+ stops)
+-- JP NAGAR / BANNERGHATTA ROAD AREA
 -- =====================================================
-('Nagercoil Bus Stand', 'நாகர்கோவில்', 8.1833, 77.4119, 'Kanyakumari', 'bus'),
-('Nagercoil Town', 'நாகர்கோவில் நகரம்', 8.1780, 77.4350, 'Kanyakumari', 'bus'),
-('Kanyakumari', 'கன்னியாகுமரி', 8.0883, 77.5385, 'Kanyakumari', 'bus'),
-('Marthandam', 'மார்த்தாண்டம்', 8.3070, 77.2200, 'Kanyakumari', 'bus'),
-('Thuckalay', 'தக்கலை', 8.2420, 77.2870, 'Kanyakumari', 'bus'),
-('Colachel', 'கோலச்சல்', 8.1762, 77.2589, 'Kanyakumari', 'bus'),
--- Additional Nagercoil/Kanyakumari stops
-('Nagercoil Junction', 'நாகர்கோவில் ஜங்ஷன்', 8.1810, 77.4210, 'Kanyakumari', 'bus'),
-('Nagercoil Kottar', 'கோட்டார்', 8.1850, 77.4380, 'Kanyakumari', 'bus'),
-('Nagercoil Vadasery', 'வடசேரி', 8.1920, 77.4280, 'Kanyakumari', 'bus'),
-('Nagercoil Medical College', 'மருத்துவக் கல்லூரி', 8.1750, 77.3980, 'Kanyakumari', 'bus'),
-('Kanyakumari Beach', 'கன்னியாகுமரி கடற்கரை', 8.0780, 77.5520, 'Kanyakumari', 'bus'),
-('Suchindram', 'சுசீந்திரம்', 8.1530, 77.4680, 'Kanyakumari', 'bus'),
-('Aralvaimozhi', 'அரள்வாய்மொழி', 8.2610, 77.3120, 'Kanyakumari', 'bus'),
-('Eraniel', 'இரணியல்', 8.2110, 77.3250, 'Kanyakumari', 'bus'),
-('Kulasekharam', 'குலசேகரம்', 8.2880, 77.2720, 'Kanyakumari', 'bus'),
-('Parvathipuram', 'பார்வதிபுரம்', 8.1610, 77.4550, 'Kanyakumari', 'bus'),
-('Ozhuginasery', 'ஒழுகினசேரி', 8.1720, 77.3880, 'Kanyakumari', 'bus'),
-('Swamithope', 'சுவாமித்தோப்பு', 8.2010, 77.4780, 'Kanyakumari', 'bus'),
-('Boothapandi', 'பூதப்பாண்டி', 8.2350, 77.4050, 'Kanyakumari', 'bus'),
-('Kuzhithurai', 'குழித்துறை', 8.3180, 77.2010, 'Kanyakumari', 'bus'),
+('JP Nagar 1st Phase', 'ಜೆಪಿ ನಗರ 1ನೇ ಫೇಸ್', 12.9073, 77.5922, 'Bangalore South', 'bus'),
+('JP Nagar 2nd Phase', 'ಜೆಪಿ ನಗರ 2ನೇ ಫೇಸ್', 12.9007, 77.5858, 'Bangalore South', 'bus'),
+('JP Nagar 4th Phase', 'ಜೆಪಿ ನಗರ 4ನೇ ಫೇಸ್', 12.8894, 77.5890, 'Bangalore South', 'bus'),
+('JP Nagar 5th Phase', 'ಜೆಪಿ ನಗರ 5ನೇ ಫೇಸ್', 12.8843, 77.5832, 'Bangalore South', 'bus'),
+('JP Nagar 6th Phase', 'ಜೆಪಿ ನಗರ 6ನೇ ಫೇಸ್', 12.8774, 77.5784, 'Bangalore South', 'bus'),
+('Bannerghatta Road', 'ಬನ್ನೇರುಘಟ್ಟ ರಸ್ತೆ', 12.8879, 77.5966, 'Bangalore South', 'bus'),
+('Meenakshi Mall', 'ಮೀನಾಕ್ಷಿ ಮಾಲ್', 12.9012, 77.5868, 'Bangalore South', 'bus'),
+('Gottigere', 'ಗೊಟ್ಟಿಗೆರೆ', 12.8629, 77.5779, 'Bangalore South', 'bus'),
 
 -- =====================================================
--- CHENNAI SURROUNDING AREAS
+-- MG ROAD / BRIGADE ROAD / CBD AREA
 -- =====================================================
-('Chengalpattu Bus Stand', 'செங்கல்பட்டு', 12.6819, 79.9888, 'Chengalpattu', 'bus'),
-('Madurantakam', 'மதுராந்தகம்', 12.4704, 79.8477, 'Chengalpattu', 'bus'),
-('Tindivanam Bus Stand', 'திண்டிவனம்', 12.2340, 79.6540, 'Villupuram', 'bus'),
-('Villupuram Bus Stand', 'விழுப்புரம்', 11.9401, 79.4861, 'Villupuram', 'bus'),
-('Ulundurpet', 'உளுந்தூர்பேட்டை', 11.7550, 79.3270, 'Kallakurichi', 'bus'),
-('Pondicherry Bus Stand', 'புதுச்சேரி', 11.9340, 79.8306, 'Pondicherry', 'bus'),
-('Mahabalipuram', 'மாமல்லபுரம்', 12.6269, 80.1927, 'Chengalpattu', 'bus'),
+('MG Road', 'ಎಂಜಿ ರೋಡ್', 12.9758, 77.6096, 'Bangalore Central', 'bus'),
+('MG Road Metro Station', 'ಎಂಜಿ ರೋಡ್ ಮೆಟ್ರೋ', 12.9757, 77.6065, 'Bangalore Central', 'bus'),
+('Trinity Circle', 'ಟ್ರಿನಿಟಿ ಸರ್ಕಲ್', 12.9724, 77.6191, 'Bangalore Central', 'bus'),
+('Brigade Road', 'ಬ್ರಿಗೇಡ್ ರೋಡ್', 12.9715, 77.6076, 'Bangalore Central', 'bus'),
+('Residency Road', 'ರೆಸಿಡೆನ್ಸಿ ರೋಡ್', 12.9697, 77.6008, 'Bangalore Central', 'bus'),
+('Richmond Circle', 'ರಿಚ್ಮಂಡ್ ಸರ್ಕಲ್', 12.9651, 77.5991, 'Bangalore Central', 'bus'),
+('Cubbon Park', 'ಕಬ್ಬನ್ ಪಾರ್ಕ್', 12.9763, 77.5929, 'Bangalore Central', 'bus'),
+('Vidhana Soudha', 'ವಿಧಾನ ಸೌಧ', 12.9795, 77.5913, 'Bangalore Central', 'bus'),
+('High Court', 'ಹೈಕೋರ್ಟ್', 12.9788, 77.5878, 'Bangalore Central', 'bus'),
 
 -- =====================================================
--- CHENNAI TO COIMBATORE CORRIDOR (via Salem)
+-- RAJAJINAGAR / MALLESHWARAM AREA
 -- =====================================================
-('Vellore Bus Stand', 'வேலூர்', 12.9165, 79.1325, 'Vellore', 'bus'),
-('Ambur', 'ஆம்பூர்', 12.7900, 78.7100, 'Tirupattur', 'bus'),
-('Vaniyambadi', 'வாணியம்பாடி', 12.6822, 78.6196, 'Tirupattur', 'bus'),
-('Krishnagiri Bus Stand', 'கிருஷ்ணகிரி', 12.5186, 78.2138, 'Krishnagiri', 'bus'),
-('Dharmapuri Bus Stand', 'தர்மபுரி', 12.1211, 78.1582, 'Dharmapuri', 'bus'),
-('Salem New Bus Stand', 'சேலம்', 11.6643, 78.1460, 'Salem', 'bus'),
-('Salem Old Bus Stand', 'சேலம் பழைய', 11.6550, 78.1580, 'Salem', 'bus'),
-('Sankari', 'சங்கரி', 11.4800, 77.8700, 'Salem', 'bus'),
-('Erode Bus Stand', 'ஈரோடு', 11.3410, 77.7172, 'Erode', 'bus'),
-('Perundurai', 'பெருந்துறை', 11.2750, 77.5870, 'Erode', 'bus'),
-('Tiruppur New Bus Stand', 'திருப்பூர்', 11.1085, 77.3411, 'Tiruppur', 'bus'),
-('Avinashi', 'அவினாசி', 11.1930, 77.2670, 'Tiruppur', 'bus'),
+('Rajajinagar 1st Block', 'ರಾಜಾಜಿನಗರ', 12.9912, 77.5524, 'Bangalore West', 'bus'),
+('Rajajinagar 4th Block', 'ರಾಜಾಜಿನಗರ 4ನೇ ಬ್ಲಾಕ್', 12.9939, 77.5485, 'Bangalore West', 'bus'),
+('Rajajinagar 6th Block', 'ರಾಜಾಜಿನಗರ 6ನೇ ಬ್ಲಾಕ್', 12.9987, 77.5432, 'Bangalore West', 'bus'),
+('Malleshwaram', 'ಮಲ್ಲೇಶ್ವರಂ', 13.0035, 77.5686, 'Bangalore West', 'bus'),
+('Malleshwaram Circle', 'ಮಲ್ಲೇಶ್ವರಂ ಸರ್ಕಲ್', 13.0012, 77.5701, 'Bangalore West', 'bus'),
+('Sadashivanagar', 'ಸದಾಶಿವನಗರ', 13.0101, 77.5768, 'Bangalore North', 'bus'),
+('Sankey Tank', 'ಸ್ಯಾಂಕಿ ಟ್ಯಾಂಕ್', 13.0089, 77.5712, 'Bangalore North', 'bus'),
+('Seshadripuram', 'ಶೇಷಾದ್ರಿಪುರಂ', 12.9892, 77.5743, 'Bangalore Central', 'bus'),
 
 -- =====================================================
--- COIMBATORE SURROUNDING AREAS
+-- WHITEFIELD / OUTER RING ROAD AREA
 -- =====================================================
-('Pollachi Bus Stand', 'பொள்ளாச்சி', 10.6600, 77.0082, 'Coimbatore', 'bus'),
-('Palladam', 'பல்லடம்', 10.9920, 77.2860, 'Tiruppur', 'bus'),
-('Mettupalayam', 'மேட்டுப்பாளையம்', 11.2990, 76.9380, 'Coimbatore', 'bus'),
-('Sulur', 'சூலூர்', 11.0380, 77.1270, 'Coimbatore', 'bus'),
-('Annur', 'ஆண்ணூர்', 11.2340, 77.1050, 'Coimbatore', 'bus'),
-('Karamadai', 'கரமடை', 11.2410, 76.9620, 'Coimbatore', 'bus'),
-('Valparai', 'வால்பாறை', 10.3258, 76.9500, 'Coimbatore', 'bus'),
-('Udumalpet', 'உடுமலைப்பேட்டை', 10.5880, 77.2480, 'Tiruppur', 'bus'),
+('Whitefield Main Road', 'ವೈಟ್‌ಫೀಲ್ಡ್ ಮೇನ್ ರೋಡ್', 12.9698, 77.7499, 'Bangalore East', 'bus'),
+('ITPL Main Road', 'ಐಟಿಪಿಎಲ್ ಮೇನ್ ರೋಡ್', 12.9854, 77.7316, 'Bangalore East', 'bus'),
+('Kadugodi', 'ಕಾಡುಗೋಡಿ', 12.9933, 77.7596, 'Bangalore East', 'bus'),
+('Hope Farm Junction', 'ಹೋಪ್ ಫಾರ್ಮ್', 12.9771, 77.7636, 'Bangalore East', 'bus'),
+('Varthur', 'ವರ್ತೂರು', 12.9412, 77.7442, 'Bangalore East', 'bus'),
+('Bellandur', 'ಬೆಳ್ಳಂದೂರು', 12.9261, 77.6757, 'Bangalore East', 'bus'),
+('Outer Ring Road Bellandur', 'ಔಟರ್ ರಿಂಗ್ ರೋಡ್', 12.9305, 77.6701, 'Bangalore East', 'bus'),
+('Kadubeesanahalli', 'ಕಡುಬೀಸನಹಳ್ಳಿ', 12.9366, 77.6854, 'Bangalore East', 'bus'),
+('Devarabisanahalli', 'ದೇವರಬಿಸನಹಳ್ಳಿ', 12.9387, 77.6943, 'Bangalore East', 'bus'),
+('Cessna Business Park', 'ಸೆಸ್ನಾ ಬಿಸಿನೆಸ್ ಪಾರ್ಕ್', 12.9178, 77.6851, 'Bangalore East', 'bus'),
 
 -- =====================================================
--- TRICHY SURROUNDING AREAS
+-- ELECTRONIC CITY / HOSUR ROAD AREA
 -- =====================================================
-('Musiri', 'முசிறி', 10.9530, 78.4430, 'Tiruchirappalli', 'bus'),
-('Karur Bus Stand', 'கரூர்', 10.9601, 78.0766, 'Karur', 'bus'),
-('Manapparai', 'மணப்பாறை', 10.6110, 78.4280, 'Tiruchirappalli', 'bus'),
-('Kulithalai', 'குளித்தலை', 10.9350, 78.4180, 'Karur', 'bus'),
-('Lalgudi', 'லால்குடி', 10.8740, 78.8190, 'Tiruchirappalli', 'bus'),
+('Electronic City Phase 1', 'ಎಲೆಕ್ಟ್ರಾನಿಕ್ ಸಿಟಿ ಫೇಸ್ 1', 12.8399, 77.6770, 'Bangalore South', 'bus'),
+('Electronic City Phase 2', 'ಎಲೆಕ್ಟ್ರಾನಿಕ್ ಸಿಟಿ ಫೇಸ್ 2', 12.8510, 77.6630, 'Bangalore South', 'bus'),
+('Infosys Electronic City', 'ಇನ್ಫೋಸಿಸ್', 12.8424, 77.6604, 'Bangalore South', 'bus'),
+('Wipro Gate Electronic City', 'ವಿಪ್ರೋ ಗೇಟ್', 12.8356, 77.6648, 'Bangalore South', 'bus'),
+('Hosur Road', 'ಹೊಸೂರು ರಸ್ತೆ', 12.8987, 77.6295, 'Bangalore South', 'bus'),
+('Singasandra', 'ಸಿಂಗಸಂದ್ರ', 12.8779, 77.6398, 'Bangalore South', 'bus'),
+('Hosa Road', 'ಹೊಸ ರಸ್ತೆ', 12.8874, 77.6520, 'Bangalore South', 'bus'),
+('Kudlu Gate', 'ಕುದ್ಲು ಗೇಟ್', 12.8935, 77.6440, 'Bangalore South', 'bus'),
 
 -- =====================================================
--- MADURAI SURROUNDING AREAS
+-- HEBBAL / YELAHANKA / NORTH BANGALORE
 -- =====================================================
-('Dindigul Bus Stand', 'திண்டுக்கல்', 10.3624, 77.9695, 'Dindigul', 'bus'),
-('Oddanchatram', 'ஒட்டன்சத்திரம்', 10.4760, 77.7510, 'Dindigul', 'bus'),
-('Palani Bus Stand', 'பழனி', 10.4500, 77.5200, 'Dindigul', 'bus'),
-('Theni Bus Stand', 'தேனி', 10.0104, 77.4769, 'Theni', 'bus'),
-('Cumbum', 'கம்பம்', 9.7360, 77.2830, 'Theni', 'bus'),
-('Sivakasi', 'சிவகாசி', 9.4497, 77.8021, 'Virudhunagar', 'bus'),
+('Hebbal Flyover', 'ಹೆಬ್ಬಾಳ ಫ್ಲೈಓವರ್', 13.0358, 77.5970, 'Bangalore North', 'bus'),
+('Esteem Mall Hebbal', 'ಎಸ್ಟೀಮ್ ಮಾಲ್', 13.0345, 77.5912, 'Bangalore North', 'bus'),
+('Mekhri Circle', 'ಮೇಖ್ರಿ ಸರ್ಕಲ್', 13.0193, 77.5891, 'Bangalore North', 'bus'),
+('Yelahanka', 'ಯಲಹಂಕ', 13.1007, 77.5963, 'Bangalore North', 'bus'),
+('Yelahanka New Town', 'ಯಲಹಂಕ ನ್ಯೂ ಟೌನ್', 13.1018, 77.5821, 'Bangalore North', 'bus'),
+('Jakkur', 'ಜಕ್ಕೂರು', 13.0771, 77.6127, 'Bangalore North', 'bus'),
+('Thanisandra', 'ತಣಿಸಂದ್ರ', 13.0595, 77.6284, 'Bangalore North', 'bus'),
+('Nagawara', 'ನಾಗವಾರ', 13.0445, 77.6187, 'Bangalore North', 'bus'),
+('Manyata Tech Park', 'ಮನ್ಯತಾ ಟೆಕ್ ಪಾರ್ಕ್', 13.0474, 77.6215, 'Bangalore North', 'bus'),
+('Sahakara Nagar', 'ಸಹಕಾರ ನಗರ', 13.0598, 77.5922, 'Bangalore North', 'bus'),
+('RT Nagar', 'ಆರ್‌ಟಿ ನಗರ', 13.0232, 77.5978, 'Bangalore North', 'bus'),
 
 -- =====================================================
--- TIRUNELVELI REGION
+-- BANASHANKARI / SOUTH BANGALORE
 -- =====================================================
-('Tirunelveli New Bus Stand', 'திருநெல்வேலி', 8.7139, 77.7567, 'Tirunelveli', 'bus'),
-('Tirunelveli Old Bus Stand', 'திருநெல்வேலி பழைய', 8.7280, 77.6930, 'Tirunelveli', 'bus'),
-('Palayamkottai', 'பாளையங்கோட்டை', 8.7053, 77.7431, 'Tirunelveli', 'bus'),
-('Tenkasi Bus Stand', 'தென்காசி', 8.9608, 77.3152, 'Tenkasi', 'bus'),
-('Sankarankovil', 'சங்கரன்கோவில்', 9.1680, 77.5330, 'Tenkasi', 'bus'),
-('Rajapalayam', 'ராஜபாளையம்', 9.4525, 77.5535, 'Virudhunagar', 'bus'),
-('Srivilliputhur', 'ஸ்ரீவில்லிபுத்தூர்', 9.5122, 77.6340, 'Virudhunagar', 'bus'),
-('Virudhunagar Bus Stand', 'விருதுநகர்', 9.5851, 77.9526, 'Virudhunagar', 'bus'),
-('Aruppukottai', 'அருப்புக்கோட்டை', 9.5140, 78.0960, 'Virudhunagar', 'bus'),
-('Kovilpatti Bus Stand', 'கோவில்பட்டி', 9.1730, 77.8660, 'Thoothukudi', 'bus'),
-('Thoothukudi Bus Stand', 'தூத்துக்குடி', 8.7642, 78.1348, 'Thoothukudi', 'bus'),
-('Valliyoor', 'வள்ளியூர்', 8.3820, 77.6120, 'Tirunelveli', 'bus'),
+('Banashankari 1st Stage', 'ಬನಶಂಕರಿ 1ನೇ ಸ್ಟೇಜ್', 12.9331, 77.5574, 'Bangalore South', 'bus'),
+('Banashankari 2nd Stage', 'ಬನಶಂಕರಿ 2ನೇ ಸ್ಟೇಜ್', 12.9237, 77.5519, 'Bangalore South', 'bus'),
+('Banashankari 3rd Stage', 'ಬನಶಂಕರಿ 3ನೇ ಸ್ಟೇಜ್', 12.9128, 77.5467, 'Bangalore South', 'bus'),
+('Kathriguppe', 'ಕಾತ್ರಿಗುಪ್ಪೆ', 12.9186, 77.5554, 'Bangalore South', 'bus'),
+('Kumaraswamy Layout', 'ಕುಮಾರಸ್ವಾಮಿ ಲೇಔಟ್', 12.9053, 77.5605, 'Bangalore South', 'bus'),
+('Uttarahalli', 'ಉತ್ತರಹಳ್ಳಿ', 12.9089, 77.5448, 'Bangalore South', 'bus'),
+('Padmanabhanagar', 'ಪದ್ಮನಾಭನಗರ', 12.9148, 77.5527, 'Bangalore South', 'bus'),
 
 -- =====================================================
--- OTHER MAJOR TOWNS
+-- BASAVANAGUDI / JAYANAGAR AREA
 -- =====================================================
-('Thanjavur Bus Stand', 'தஞ்சாவூர்', 10.7870, 79.1378, 'Thanjavur', 'bus'),
-('Kumbakonam Bus Stand', 'கும்பகோணம்', 10.9617, 79.3881, 'Thanjavur', 'bus'),
-('Pudukottai Bus Stand', 'புதுக்கோட்டை', 10.3797, 78.8205, 'Pudukottai', 'bus'),
-('Sivagangai', 'சிவகங்கை', 9.8477, 78.4815, 'Sivagangai', 'bus'),
-('Namakkal Bus Stand', 'நாமக்கல்', 11.2190, 78.1670, 'Namakkal', 'bus'),
-('Gobichettipalayam', 'கோபிச்செட்டிபாளையம்', 11.4530, 77.4420, 'Erode', 'bus'),
-('Bhavani', 'பவானி', 11.4450, 77.6830, 'Erode', 'bus'),
-('Dharapuram', 'தாராபுரம்', 10.7360, 77.5200, 'Tiruppur', 'bus'),
-('Sattur', 'சாத்தூர்', 9.3540, 77.9210, 'Virudhunagar', 'bus');
+('Basavanagudi', 'ಬಸವನಗುಡಿ', 12.9416, 77.5732, 'Bangalore South', 'bus'),
+('Bull Temple', 'ಬಸವನ ಗುಡಿ ದೇವಸ್ಥಾನ', 12.9430, 77.5679, 'Bangalore South', 'bus'),
+('National College', 'ನ್ಯಾಷನಲ್ ಕಾಲೇಜ್', 12.9441, 77.5756, 'Bangalore South', 'bus'),
+('Jayanagar 3rd Block', 'ಜಯನಗರ 3ನೇ ಬ್ಲಾಕ್', 12.9297, 77.5824, 'Bangalore South', 'bus'),
+('Jayanagar 5th Block', 'ಜಯನಗರ 5ನೇ ಬ್ಲಾಕ್', 12.9265, 77.5779, 'Bangalore South', 'bus'),
+('Jayanagar 9th Block', 'ಜಯನಗರ 9ನೇ ಬ್ಲಾಕ್', 12.9223, 77.5911, 'Bangalore South', 'bus'),
+('South End Circle', 'ಸೌತ್ ಎಂಡ್ ಸರ್ಕಲ್', 12.9391, 77.5851, 'Bangalore South', 'bus'),
+('Lalbagh West Gate', 'ಲಾಲ್‌ಬಾಗ್', 12.9507, 77.5848, 'Bangalore South', 'bus'),
+('Lalbagh Main Gate', 'ಲಾಲ್‌ಬಾಗ್ ಮೇನ್ ಗೇಟ್', 12.9499, 77.5844, 'Bangalore South', 'bus'),
+
+-- =====================================================
+-- PEENYA / INDUSTRIAL AREA
+-- =====================================================
+('Peenya', 'ಪೀಣ್ಯ', 13.0313, 77.5170, 'Bangalore North', 'bus'),
+('Peenya Industrial Area', 'ಪೀಣ್ಯ ಇಂಡಸ್ಟ್ರಿಯಲ್', 13.0278, 77.5215, 'Bangalore North', 'bus'),
+('Peenya 2nd Stage', 'ಪೀಣ್ಯ 2ನೇ ಸ್ಟೇಜ್', 13.0234, 77.5178, 'Bangalore North', 'bus'),
+('Jalahalli', 'ಜಲಹಳ್ಳಿ', 13.0396, 77.5455, 'Bangalore North', 'bus'),
+('Jalahalli Cross', 'ಜಲಹಳ್ಳಿ ಕ್ರಾಸ್', 13.0342, 77.5389, 'Bangalore North', 'bus'),
+('Dasarahalli', 'ದಾಸರಹಳ್ಳಿ', 13.0453, 77.5129, 'Bangalore North', 'bus'),
+('Nagasandra', 'ನಾಗಸಂದ್ರ', 13.0486, 77.5043, 'Bangalore North', 'bus'),
+
+-- =====================================================
+-- AIRPORT / NORTH EAST BANGALORE
+-- =====================================================
+('Kempegowda International Airport', 'ಕೆಂಪೇಗೌಡ ವಿಮಾನ ನಿಲ್ದಾಣ', 13.1986, 77.7066, 'Bangalore Rural', 'bus'),
+('Devanahalli', 'ದೇವನಹಳ್ಳಿ', 13.2476, 77.7135, 'Bangalore Rural', 'bus'),
+('Trumpet Flyover', 'ಟ್ರಂಪೆಟ್ ಫ್ಲೈಓವರ್', 13.1567, 77.6234, 'Bangalore North', 'bus'),
+('Bagalur', 'ಬಾಗಲೂರು', 13.1423, 77.6567, 'Bangalore North', 'bus');
 
 
 -- =====================================================
--- ROUTES (Bus routes with multiple options for same destination)
+-- ROUTES (BMTC Popular Bus Routes with Accurate Frequencies)
 -- =====================================================
 
 INSERT INTO routes (route_number, route_name, transport_type, operator, frequency_mins) VALUES
--- SETC (State Express Transport Corporation) - Long distance express
-('SETC-001', 'Chennai - Coimbatore Express (via Salem)', 'bus', 'SETC', 60),
-('SETC-002', 'Chennai - Madurai Express (via Trichy)', 'bus', 'SETC', 45),
-('SETC-002A', 'Chennai - Madurai Superfast (Direct)', 'bus', 'SETC', 60),
-('SETC-003', 'Chennai - Nagercoil Express', 'bus', 'SETC', 90),
-('SETC-004', 'Coimbatore - Nagercoil Express', 'bus', 'SETC', 120),
-('SETC-005', 'Chennai - Tirunelveli Express', 'bus', 'SETC', 90),
-('SETC-006', 'Coimbatore - Madurai Express', 'bus', 'SETC', 60),
-('SETC-006A', 'Coimbatore - Madurai Via Palani', 'bus', 'SETC', 75),
+-- Volvo AC Routes (V-Series)
+('V-500C', 'Majestic - Electronic City (Via Silk Board)', 'bus', 'BMTC Volvo', 10),
+('V-500CA', 'Majestic - Electronic City (Via Koramangala)', 'bus', 'BMTC Volvo', 15),
+('V-500D', 'Majestic - Electronic City (Via Bannerghatta Road)', 'bus', 'BMTC Volvo', 12),
+('V-500E', 'Majestic - Infosys Electronic City', 'bus', 'BMTC Volvo', 15),
+('V-500NA', 'Majestic - ITPL Whitefield', 'bus', 'BMTC Volvo', 12),
+('V-500NB', 'Majestic - Whitefield (Via Old Airport Road)', 'bus', 'BMTC Volvo', 15),
+('V-500S', 'Majestic - Whitefield (Via Silk Board)', 'bus', 'BMTC Volvo', 20),
+('V-335E', 'Banashankari - ITPL Whitefield', 'bus', 'BMTC Volvo', 15),
+('V-335W', 'Electronic City - Whitefield', 'bus', 'BMTC Volvo', 20),
+('V-356', 'Majestic - Manyata Tech Park', 'bus', 'BMTC Volvo', 15),
 
--- TNSTC (Tamil Nadu State Transport Corporation) - Regular buses
-('TNSTC-137', 'Chennai - Trichy (via ECR)', 'bus', 'TNSTC', 30),
-('TNSTC-137A', 'Chennai - Trichy (via Villupuram)', 'bus', 'TNSTC', 45),
-('TNSTC-227', 'Trichy - Madurai', 'bus', 'TNSTC', 30),
-('TNSTC-317', 'Coimbatore - Salem (via Erode)', 'bus', 'TNSTC', 45),
-('TNSTC-401', 'Madurai - Tirunelveli', 'bus', 'TNSTC', 30),
-('TNSTC-501', 'Tirunelveli - Nagercoil', 'bus', 'TNSTC', 20),
-('TNSTC-601', 'Nagercoil - Kanyakumari', 'bus', 'TNSTC', 15),
+-- Vayu Vajra (Airport) Routes
+('KIA-4', 'Majestic - Kempegowda Airport', 'bus', 'BMTC Vajra', 30),
+('KIA-5', 'Shivajinagar - Kempegowda Airport', 'bus', 'BMTC Vajra', 45),
+('KIA-6', 'Whitefield - Kempegowda Airport', 'bus', 'BMTC Vajra', 60),
+('KIA-7', 'Electronic City - Kempegowda Airport', 'bus', 'BMTC Vajra', 45),
+('KIA-8', 'Banashankari - Kempegowda Airport', 'bus', 'BMTC Vajra', 60),
+('KIA-9', 'Jayanagar - Kempegowda Airport', 'bus', 'BMTC Vajra', 60),
 
--- Chennai city routes (MTC)
-('MTC-21C', 'CMBT - Adyar (via T.Nagar)', 'bus', 'MTC', 10),
-('MTC-21D', 'CMBT - Besant Nagar (via Guindy)', 'bus', 'MTC', 12),
-('MTC-27', 'Broadway - Tambaram', 'bus', 'MTC', 15),
-('MTC-27A', 'Broadway - Chromepet (via Saidapet)', 'bus', 'MTC', 18),
-('MTC-29C', 'CMBT - Velachery (via Guindy)', 'bus', 'MTC', 12),
-('MTC-70', 'Egmore - Sholinganallur', 'bus', 'MTC', 20),
-('MTC-5', 'Broadway - Anna Nagar', 'bus', 'MTC', 15),
-('MTC-15', 'CMBT - Broadway (via Kilpauk)', 'bus', 'MTC', 12),
-('MTC-47', 'Tambaram - Vadapalani', 'bus', 'MTC', 20),
-('MTC-47B', 'Tambaram - Anna Nagar (via Guindy)', 'bus', 'MTC', 25),
+-- Regular Bus Routes (High Frequency)
+('401', 'Majestic - Jayanagar - Electronic City', 'bus', 'BMTC', 8),
+('401A', 'Majestic - Bannerghatta Road - Gottigere', 'bus', 'BMTC', 10),
+('401K', 'Majestic - JP Nagar - Kengeri', 'bus', 'BMTC', 12),
+('500A', 'Majestic - Koramangala - Electronic City', 'bus', 'BMTC', 10),
+('500B', 'Majestic - HSR Layout - Electronic City', 'bus', 'BMTC', 12),
+('500K', 'Majestic - BTM Layout - Kudlu', 'bus', 'BMTC', 15),
+('201', 'Majestic - Indiranagar - Whitefield', 'bus', 'BMTC', 10),
+('201R', 'Shivajinagar - CV Raman Nagar - Whitefield', 'bus', 'BMTC', 15),
+('201M', 'Majestic - Marathahalli - ITPL', 'bus', 'BMTC', 12),
 
--- Coimbatore city routes (TNSTC)
-('TNSTC-CBE-01', 'Gandhipuram - Singanallur', 'bus', 'TNSTC', 10),
-('TNSTC-CBE-01A', 'Gandhipuram - Singanallur (via Peelamedu)', 'bus', 'TNSTC', 12),
-('TNSTC-CBE-02', 'Coimbatore - Mettupalayam', 'bus', 'TNSTC', 30),
-('TNSTC-CBE-03', 'Ukkadam - Pollachi', 'bus', 'TNSTC', 20),
-('TNSTC-CBE-04', 'Gandhipuram - Tiruppur', 'bus', 'TNSTC', 15),
-('TNSTC-CBE-05', 'Gandhipuram - Ukkadam', 'bus', 'TNSTC', 8),
-('TNSTC-CBE-05A', 'Gandhipuram - Ukkadam (via RS Puram)', 'bus', 'TNSTC', 10),
-('TNSTC-CBE-06', 'Singanallur - Ondipudur', 'bus', 'TNSTC', 15),
+-- Ring Road Routes
+('365', 'Outer Ring Road Circular (Clockwise)', 'bus', 'BMTC', 15),
+('365A', 'Outer Ring Road Circular (Anti-Clockwise)', 'bus', 'BMTC', 15),
 
--- Madurai city routes
-('MDU-01', 'Mattuthavani - Periyar (via Railway Station)', 'bus', 'TNSTC', 10),
-('MDU-02', 'Periyar - Anna Nagar', 'bus', 'TNSTC', 15),
-('MDU-03', 'Mattuthavani - Othakadai', 'bus', 'TNSTC', 12),
+-- North Bangalore Routes
+('276', 'Majestic - Hebbal - Yelahanka', 'bus', 'BMTC', 8),
+('276A', 'Majestic - Manyata Tech Park - Jakkur', 'bus', 'BMTC', 12),
+('290', 'Majestic - RT Nagar - Hebbal', 'bus', 'BMTC', 10),
+('292', 'Shivajinagar - Hebbal - Yelahanka', 'bus', 'BMTC', 12),
 
--- Trichy city routes
-('TRY-01', 'Central - Srirangam', 'bus', 'TNSTC', 10),
-('TRY-02', 'Central - Chatram (via Junction)', 'bus', 'TNSTC', 8),
-('TRY-03', 'Chatram - Thiruverumbur', 'bus', 'TNSTC', 15),
+-- West Bangalore Routes
+('252', 'Majestic - Vijayanagar - Kengeri', 'bus', 'BMTC', 10),
+('252A', 'Majestic - Rajajinagar - Yeshwanthpur', 'bus', 'BMTC', 8),
+('258', 'Shivajinagar - Malleshwaram - Yeshwanthpur', 'bus', 'BMTC', 10),
 
--- Nagercoil city routes
-('NKL-01', 'Bus Stand - Kanyakumari', 'bus', 'TNSTC', 15),
-('NKL-02', 'Bus Stand - Marthandam', 'bus', 'TNSTC', 20),
-('NKL-03', 'Junction - Suchindram', 'bus', 'TNSTC', 12),
-
--- Inter-city routes
-('TNSTC-NKL-TV', 'Nagercoil - Tirunelveli', 'bus', 'TNSTC', 30);
+-- South Bangalore Routes  
+('210', 'Majestic - Basavanagudi - Banashankari', 'bus', 'BMTC', 6),
+('210A', 'Shivajinagar - Jayanagar - Banashankari', 'bus', 'BMTC', 8),
+('215', 'Majestic - JP Nagar - Uttarahalli', 'bus', 'BMTC', 10),
+('215K', 'Majestic - Kumaraswamy Layout - Kengeri', 'bus', 'BMTC', 12);
 
 
 -- =====================================================
--- ROUTE STOPS (Stop sequences for each route)
+-- ROUTE STOPS (Stop sequences with ETA information)
 -- =====================================================
 
--- Route SETC-001: Chennai - Coimbatore Express (via Salem)
+-- Route V-500C: Majestic - Electronic City (Via Silk Board)
 INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
 SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
 FROM routes r, 
 LATERAL (VALUES
-    ('Chennai CMBT (Koyambedu)', 1, 0, 0),
-    ('Vellore Bus Stand', 2, 140, 150),
-    ('Krishnagiri Bus Stand', 3, 230, 240),
-    ('Salem New Bus Stand', 4, 340, 360),
-    ('Erode Bus Stand', 5, 420, 450),
-    ('Tiruppur New Bus Stand', 6, 470, 510),
-    ('Coimbatore Gandhipuram', 7, 510, 560)
+    ('Kempegowda Bus Station (Majestic)', 1, 0, 0),
+    ('KR Market Bus Station', 2, 2, 5),
+    ('Lalbagh Main Gate', 3, 4, 10),
+    ('South End Circle', 4, 5, 14),
+    ('Jayanagar 4th Block TTMC', 5, 7, 20),
+    ('BTM Layout 1st Stage', 6, 10, 28),
+    ('Silk Board Junction', 7, 12, 35),
+    ('Bommanahalli', 8, 15, 42),
+    ('Singasandra', 9, 18, 50),
+    ('Hosur Road', 10, 20, 55),
+    ('Electronic City Phase 2', 11, 24, 65),
+    ('Electronic City Bus Station', 12, 26, 70)
 ) AS seq(stop_name, sequence, distance, time_offset)
 JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'SETC-001';
+WHERE r.route_number = 'V-500C';
 
--- Route SETC-002: Chennai - Madurai Express (via Trichy)
+-- Route V-500CA: Majestic - Electronic City (Via Koramangala)
 INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
 SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
 FROM routes r, 
 LATERAL (VALUES
-    ('Chennai CMBT (Koyambedu)', 1, 0, 0),
-    ('Chengalpattu Bus Stand', 2, 55, 60),
-    ('Tindivanam Bus Stand', 3, 120, 130),
-    ('Villupuram Bus Stand', 4, 160, 180),
-    ('Trichy Central Bus Stand', 5, 330, 360),
-    ('Dindigul Bus Stand', 6, 420, 450),
-    ('Madurai Mattuthavani', 7, 480, 510)
+    ('Kempegowda Bus Station (Majestic)', 1, 0, 0),
+    ('Shantinagar Bus Station', 2, 3, 8),
+    ('Richmond Circle', 3, 5, 14),
+    ('Koramangala 6th Block', 4, 9, 25),
+    ('Koramangala 1st Block', 5, 11, 30),
+    ('Koramangala 8th Block', 6, 13, 36),
+    ('HSR Layout BDA Complex', 7, 16, 45),
+    ('Bommanahalli', 8, 19, 52),
+    ('Electronic City Phase 1', 9, 25, 68),
+    ('Electronic City Bus Station', 10, 27, 75)
 ) AS seq(stop_name, sequence, distance, time_offset)
 JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'SETC-002';
+WHERE r.route_number = 'V-500CA';
 
--- Route SETC-002A: Chennai - Madurai Superfast (Direct)
+-- Route V-500NA: Majestic - ITPL Whitefield
 INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
 SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
 FROM routes r, 
 LATERAL (VALUES
-    ('Chennai CMBT (Koyambedu)', 1, 0, 0),
-    ('Villupuram Bus Stand', 2, 160, 150),
-    ('Trichy Central Bus Stand', 3, 330, 300),
-    ('Madurai Mattuthavani', 4, 480, 420)
+    ('Kempegowda Bus Station (Majestic)', 1, 0, 0),
+    ('Shivajinagar Bus Station', 2, 3, 10),
+    ('Indiranagar Metro Station', 3, 8, 22),
+    ('Indiranagar 100 Feet Road', 4, 9, 26),
+    ('Domlur', 5, 11, 32),
+    ('HAL Airport', 6, 14, 40),
+    ('Marathahalli', 7, 18, 50),
+    ('Outer Ring Road Bellandur', 8, 22, 60),
+    ('Kadubeesanahalli', 9, 25, 68),
+    ('ITPL Main Road', 10, 28, 75),
+    ('ITPL (International Tech Park)', 11, 30, 80),
+    ('Whitefield TTMC', 12, 34, 90)
 ) AS seq(stop_name, sequence, distance, time_offset)
 JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'SETC-002A';
+WHERE r.route_number = 'V-500NA';
 
--- Route SETC-003: Chennai - Nagercoil Express
+-- Route V-335E: Banashankari - ITPL Whitefield
 INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
 SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
 FROM routes r, 
 LATERAL (VALUES
-    ('Chennai CMBT (Koyambedu)', 1, 0, 0),
-    ('Villupuram Bus Stand', 2, 160, 180),
-    ('Trichy Central Bus Stand', 3, 330, 360),
-    ('Madurai Mattuthavani', 4, 480, 510),
-    ('Tirunelveli New Bus Stand', 5, 630, 680),
-    ('Nagercoil Bus Stand', 6, 720, 780)
+    ('Banashankari TTMC', 1, 0, 0),
+    ('Jayanagar 4th Block TTMC', 2, 4, 12),
+    ('South End Circle', 3, 6, 18),
+    ('Lalbagh Main Gate', 4, 8, 24),
+    ('Shantinagar Bus Station', 5, 10, 30),
+    ('MG Road', 6, 13, 38),
+    ('Trinity Circle', 7, 14, 42),
+    ('Indiranagar 100 Feet Road', 8, 18, 52),
+    ('Domlur', 9, 20, 58),
+    ('Marathahalli', 10, 26, 72),
+    ('Bellandur', 11, 30, 82),
+    ('Kadubeesanahalli', 12, 33, 90),
+    ('ITPL (International Tech Park)', 13, 38, 105),
+    ('Whitefield TTMC', 14, 42, 115)
 ) AS seq(stop_name, sequence, distance, time_offset)
 JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'SETC-003';
+WHERE r.route_number = 'V-335E';
 
--- Route SETC-004: Coimbatore - Nagercoil Express
+-- Route V-356: Majestic - Manyata Tech Park
 INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
 SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
 FROM routes r, 
 LATERAL (VALUES
-    ('Coimbatore Gandhipuram', 1, 0, 0),
-    ('Pollachi Bus Stand', 2, 40, 50),
-    ('Dindigul Bus Stand', 3, 150, 180),
-    ('Madurai Mattuthavani', 4, 230, 270),
-    ('Tirunelveli New Bus Stand', 5, 380, 420),
-    ('Nagercoil Bus Stand', 6, 470, 510)
+    ('Kempegowda Bus Station (Majestic)', 1, 0, 0),
+    ('Seshadripuram', 2, 2, 6),
+    ('Malleshwaram Circle', 3, 4, 12),
+    ('Sadashivanagar', 4, 6, 18),
+    ('Mekhri Circle', 5, 8, 24),
+    ('Hebbal Flyover', 6, 11, 32),
+    ('Nagawara', 7, 14, 40),
+    ('Manyata Tech Park', 8, 16, 48)
 ) AS seq(stop_name, sequence, distance, time_offset)
 JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'SETC-004';
+WHERE r.route_number = 'V-356';
 
--- Route SETC-006: Coimbatore - Madurai Express
+-- Route KIA-4: Majestic - Kempegowda Airport
 INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
 SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
 FROM routes r, 
 LATERAL (VALUES
-    ('Coimbatore Gandhipuram', 1, 0, 0),
-    ('Tiruppur New Bus Stand', 2, 50, 60),
-    ('Dharapuram', 3, 90, 110),
-    ('Dindigul Bus Stand', 4, 170, 200),
-    ('Madurai Mattuthavani', 5, 240, 280)
+    ('Kempegowda Bus Station (Majestic)', 1, 0, 0),
+    ('Mekhri Circle', 2, 7, 15),
+    ('Hebbal Flyover', 3, 10, 22),
+    ('Esteem Mall Hebbal', 4, 11, 25),
+    ('Yelahanka', 5, 20, 40),
+    ('Trumpet Flyover', 6, 30, 55),
+    ('Kempegowda International Airport', 7, 40, 75)
 ) AS seq(stop_name, sequence, distance, time_offset)
 JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'SETC-006';
+WHERE r.route_number = 'KIA-4';
 
--- Route SETC-006A: Coimbatore - Madurai Via Palani
+-- Route KIA-7: Electronic City - Kempegowda Airport
 INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
 SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
 FROM routes r, 
 LATERAL (VALUES
-    ('Coimbatore Gandhipuram', 1, 0, 0),
-    ('Pollachi Bus Stand', 2, 40, 50),
-    ('Palani Bus Stand', 3, 100, 120),
-    ('Dindigul Bus Stand', 4, 150, 180),
-    ('Madurai Mattuthavani', 5, 220, 260)
+    ('Electronic City Bus Station', 1, 0, 0),
+    ('Silk Board Junction', 2, 14, 25),
+    ('Koramangala 1st Block', 3, 18, 35),
+    ('MG Road', 4, 24, 50),
+    ('Mekhri Circle', 5, 30, 65),
+    ('Hebbal Flyover', 6, 34, 75),
+    ('Yelahanka', 7, 44, 95),
+    ('Kempegowda International Airport', 8, 60, 130)
 ) AS seq(stop_name, sequence, distance, time_offset)
 JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'SETC-006A';
+WHERE r.route_number = 'KIA-7';
 
--- Route TNSTC-137: Chennai - Trichy (via ECR)
+-- Route 401: Majestic - Jayanagar - Electronic City
 INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
 SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
 FROM routes r, 
 LATERAL (VALUES
-    ('Chennai CMBT (Koyambedu)', 1, 0, 0),
-    ('Chennai Tambaram', 2, 25, 40),
-    ('Chengalpattu Bus Stand', 3, 55, 75),
-    ('Pondicherry Bus Stand', 4, 160, 200),
-    ('Trichy Central Bus Stand', 5, 330, 400)
+    ('Kempegowda Bus Station (Majestic)', 1, 0, 0),
+    ('KR Market Bus Station', 2, 2, 6),
+    ('Basavanagudi', 3, 5, 15),
+    ('National College', 4, 6, 18),
+    ('Jayanagar 4th Block TTMC', 5, 8, 24),
+    ('Jayanagar 9th Block', 6, 10, 30),
+    ('BTM Layout 2nd Stage', 7, 13, 38),
+    ('Silk Board Junction', 8, 15, 45),
+    ('HSR Layout BDA Complex', 9, 18, 52),
+    ('Bommanahalli', 10, 21, 60),
+    ('Electronic City Bus Station', 11, 28, 80)
 ) AS seq(stop_name, sequence, distance, time_offset)
 JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'TNSTC-137';
+WHERE r.route_number = '401';
 
--- Route TNSTC-137A: Chennai - Trichy (via Villupuram)
+-- Route 201: Majestic - Indiranagar - Whitefield
 INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
 SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
 FROM routes r, 
 LATERAL (VALUES
-    ('Chennai CMBT (Koyambedu)', 1, 0, 0),
-    ('Chennai Tambaram', 2, 25, 40),
-    ('Tindivanam Bus Stand', 3, 120, 150),
-    ('Villupuram Bus Stand', 4, 160, 200),
-    ('Trichy Central Bus Stand', 5, 330, 420)
+    ('Kempegowda Bus Station (Majestic)', 1, 0, 0),
+    ('Shivajinagar Bus Station', 2, 3, 10),
+    ('Cubbon Park', 3, 5, 15),
+    ('MG Road', 4, 6, 18),
+    ('Trinity Circle', 5, 7, 22),
+    ('Indiranagar Metro Station', 6, 10, 32),
+    ('CMH Road Indiranagar', 7, 11, 36),
+    ('Old Airport Road Domlur', 8, 13, 42),
+    ('HAL Airport', 9, 16, 50),
+    ('CV Raman Nagar', 10, 18, 55),
+    ('Marathahalli', 11, 22, 65),
+    ('Varthur', 12, 28, 80),
+    ('Kadugodi', 13, 32, 90),
+    ('Whitefield TTMC', 14, 35, 100)
 ) AS seq(stop_name, sequence, distance, time_offset)
 JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'TNSTC-137A';
+WHERE r.route_number = '201';
 
--- Route TNSTC-227: Trichy - Madurai
+-- Route 276: Majestic - Hebbal - Yelahanka
 INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
 SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
 FROM routes r, 
 LATERAL (VALUES
-    ('Trichy Central Bus Stand', 1, 0, 0),
-    ('Pudukottai Bus Stand', 2, 50, 70),
-    ('Sivagangai', 3, 100, 130),
-    ('Madurai Periyar Bus Stand', 4, 150, 190)
+    ('Kempegowda Bus Station (Majestic)', 1, 0, 0),
+    ('Vidhana Soudha', 2, 2, 6),
+    ('High Court', 3, 3, 9),
+    ('Cubbon Park', 4, 4, 12),
+    ('Malleshwaram', 5, 7, 22),
+    ('Sadashivanagar', 6, 9, 28),
+    ('RT Nagar', 7, 12, 36),
+    ('Mekhri Circle', 8, 14, 42),
+    ('Hebbal Flyover', 9, 17, 50),
+    ('Jakkur', 10, 22, 62),
+    ('Sahakara Nagar', 11, 25, 70),
+    ('Yelahanka', 12, 30, 85)
 ) AS seq(stop_name, sequence, distance, time_offset)
 JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'TNSTC-227';
+WHERE r.route_number = '276';
 
--- Route TNSTC-317: Coimbatore - Salem (via Erode)
+-- Route 210: Majestic - Basavanagudi - Banashankari
 INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
 SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
 FROM routes r, 
 LATERAL (VALUES
-    ('Coimbatore Gandhipuram', 1, 0, 0),
-    ('Tiruppur New Bus Stand', 2, 50, 60),
-    ('Erode Bus Stand', 3, 100, 120),
-    ('Bhavani', 4, 120, 145),
-    ('Salem New Bus Stand', 5, 180, 220)
+    ('Kempegowda Bus Station (Majestic)', 1, 0, 0),
+    ('KR Market Bus Station', 2, 2, 5),
+    ('Bull Temple', 3, 5, 14),
+    ('Basavanagudi', 4, 6, 17),
+    ('Jayanagar 5th Block', 5, 8, 24),
+    ('Jayanagar 4th Block TTMC', 6, 9, 27),
+    ('South End Circle', 7, 10, 30),
+    ('Banashankari 1st Stage', 8, 12, 36),
+    ('Banashankari TTMC', 9, 14, 42)
 ) AS seq(stop_name, sequence, distance, time_offset)
 JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'TNSTC-317';
+WHERE r.route_number = '210';
 
--- Route TNSTC-401: Madurai - Tirunelveli
+-- Route 252: Majestic - Vijayanagar - Kengeri
 INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
 SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
 FROM routes r, 
 LATERAL (VALUES
-    ('Madurai Mattuthavani', 1, 0, 0),
-    ('Virudhunagar Bus Stand', 2, 55, 70),
-    ('Sattur', 3, 85, 100),
-    ('Kovilpatti Bus Stand', 4, 120, 150),
-    ('Tirunelveli New Bus Stand', 5, 160, 200)
+    ('Kempegowda Bus Station (Majestic)', 1, 0, 0),
+    ('Rajajinagar 1st Block', 2, 3, 10),
+    ('Rajajinagar 4th Block', 3, 5, 16),
+    ('Rajajinagar 6th Block', 4, 7, 22),
+    ('Vijayanagar TTMC', 5, 9, 28),
+    ('Yeshwanthpur TTMC', 6, 12, 38),
+    ('Peenya', 7, 16, 50),
+    ('Jalahalli', 8, 18, 56),
+    ('Nagasandra', 9, 21, 65),
+    ('Kengeri TTMC', 10, 28, 85)
 ) AS seq(stop_name, sequence, distance, time_offset)
 JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'TNSTC-401';
+WHERE r.route_number = '252';
 
--- Route TNSTC-501: Tirunelveli - Nagercoil
+-- Route 365: Outer Ring Road Circular (Clockwise)
 INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
 SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
 FROM routes r, 
 LATERAL (VALUES
-    ('Tirunelveli New Bus Stand', 1, 0, 0),
-    ('Valliyoor', 2, 35, 45),
-    ('Nagercoil Bus Stand', 3, 90, 110)
+    ('Silk Board Junction', 1, 0, 0),
+    ('HSR Layout Sector 2', 2, 3, 8),
+    ('Bellandur', 3, 7, 18),
+    ('Kadubeesanahalli', 4, 10, 26),
+    ('Marathahalli', 5, 14, 36),
+    ('ITPL (International Tech Park)', 6, 20, 52),
+    ('Whitefield TTMC', 7, 25, 65),
+    ('Hope Farm Junction', 8, 28, 72),
+    ('Kadugodi', 9, 32, 82),
+    ('Varthur', 10, 36, 92),
+    ('Bellandur', 11, 42, 108),
+    ('HSR Layout BDA Complex', 12, 48, 122),
+    ('Silk Board Junction', 13, 52, 135)
 ) AS seq(stop_name, sequence, distance, time_offset)
 JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'TNSTC-501';
+WHERE r.route_number = '365';
 
--- Route TNSTC-601: Nagercoil - Kanyakumari
+-- Route 500A: Majestic - Koramangala - Electronic City
 INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
 SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
 FROM routes r, 
 LATERAL (VALUES
-    ('Nagercoil Bus Stand', 1, 0, 0),
-    ('Nagercoil Town', 2, 3, 10),
-    ('Kanyakumari', 3, 22, 35)
+    ('Kempegowda Bus Station (Majestic)', 1, 0, 0),
+    ('Shantinagar Bus Station', 2, 3, 10),
+    ('Forum Mall Koramangala', 3, 8, 25),
+    ('Sony World Junction', 4, 9, 28),
+    ('Koramangala 4th Block', 5, 10, 32),
+    ('Koramangala 8th Block', 6, 12, 38),
+    ('HSR Layout Sector 1', 7, 15, 46),
+    ('HSR Layout BDA Complex', 8, 17, 52),
+    ('Bommanahalli', 9, 20, 60),
+    ('Kudlu Gate', 10, 23, 68),
+    ('Hosa Road', 11, 25, 74),
+    ('Electronic City Phase 1', 12, 29, 85),
+    ('Infosys Electronic City', 13, 31, 92),
+    ('Electronic City Bus Station', 14, 33, 98)
 ) AS seq(stop_name, sequence, distance, time_offset)
 JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'TNSTC-601';
-
--- Chennai City Routes (MTC)
-
--- Route MTC-21C: CMBT - Adyar (via T.Nagar)
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Chennai CMBT (Koyambedu)', 1, 0, 0),
-    ('Chennai Vadapalani', 2, 5, 15),
-    ('Chennai Kodambakkam', 3, 8, 22),
-    ('Chennai T.Nagar', 4, 10, 28),
-    ('Chennai Nungambakkam', 5, 12, 35),
-    ('Chennai Adyar', 6, 18, 50)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'MTC-21C';
-
--- Route MTC-21D: CMBT - Besant Nagar (via Guindy)
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Chennai CMBT (Koyambedu)', 1, 0, 0),
-    ('Chennai Vadapalani', 2, 5, 15),
-    ('Chennai Ashok Nagar', 3, 8, 22),
-    ('Chennai Guindy', 4, 12, 32),
-    ('Chennai Adyar', 5, 16, 42),
-    ('Chennai Besant Nagar', 6, 19, 52)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'MTC-21D';
-
--- Route MTC-27: Broadway - Tambaram
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Chennai Broadway', 1, 0, 0),
-    ('Chennai Egmore', 2, 3, 10),
-    ('Chennai T.Nagar', 3, 8, 25),
-    ('Chennai Guindy', 4, 12, 35),
-    ('Chennai Chromepet', 5, 20, 50),
-    ('Chennai Tambaram', 6, 25, 60)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'MTC-27';
-
--- Route MTC-27A: Broadway - Chromepet (via Saidapet)
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Chennai Broadway', 1, 0, 0),
-    ('Chennai Egmore', 2, 3, 10),
-    ('Chennai Nungambakkam', 3, 6, 18),
-    ('Chennai Saidapet', 4, 10, 28),
-    ('Chennai Guindy', 5, 12, 35),
-    ('Chennai Chromepet', 6, 20, 52)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'MTC-27A';
-
--- Route MTC-29C: CMBT - Velachery (via Guindy)
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Chennai CMBT (Koyambedu)', 1, 0, 0),
-    ('Chennai Vadapalani', 2, 5, 15),
-    ('Chennai Ashok Nagar', 3, 8, 22),
-    ('Chennai Guindy', 4, 12, 30),
-    ('Chennai Velachery', 5, 18, 45)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'MTC-29C';
-
--- Route MTC-70: Egmore - Sholinganallur
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Chennai Egmore', 1, 0, 0),
-    ('Chennai Mylapore', 2, 5, 15),
-    ('Chennai Adyar', 3, 8, 22),
-    ('Chennai ECR Thiruvanmiyur', 4, 12, 32),
-    ('Chennai OMR Thoraipakkam', 5, 18, 45),
-    ('Chennai Sholinganallur', 6, 22, 55)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'MTC-70';
-
--- Route MTC-5: Broadway - Anna Nagar
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Chennai Broadway', 1, 0, 0),
-    ('Chennai Parrys Corner', 2, 1, 5),
-    ('Chennai Perambur', 3, 5, 15),
-    ('Chennai Kolathur', 4, 8, 22),
-    ('Chennai Anna Nagar', 5, 12, 32)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'MTC-5';
-
--- Route MTC-15: CMBT - Broadway (via Kilpauk)
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Chennai CMBT (Koyambedu)', 1, 0, 0),
-    ('Chennai Anna Nagar', 2, 5, 12),
-    ('Chennai Kilpauk', 3, 8, 20),
-    ('Chennai Egmore', 4, 11, 28),
-    ('Chennai Broadway', 5, 14, 38)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'MTC-15';
-
--- Route MTC-47: Tambaram - Vadapalani
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Chennai Tambaram', 1, 0, 0),
-    ('Chennai Chromepet', 2, 5, 12),
-    ('Chennai Pallavaram', 3, 8, 20),
-    ('Chennai Alandur', 4, 12, 30),
-    ('Chennai Guindy', 5, 15, 38),
-    ('Chennai Vadapalani', 6, 20, 50)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'MTC-47';
-
--- Route MTC-47B: Tambaram - Anna Nagar (via Guindy)
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Chennai Tambaram', 1, 0, 0),
-    ('Chennai Chromepet', 2, 5, 12),
-    ('Chennai Guindy', 3, 12, 28),
-    ('Chennai Vadapalani', 4, 17, 40),
-    ('Chennai CMBT (Koyambedu)', 5, 22, 52),
-    ('Chennai Anna Nagar', 6, 27, 65)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'MTC-47B';
-
--- Coimbatore City Routes
-
--- Route TNSTC-CBE-01: Gandhipuram - Singanallur
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Coimbatore Gandhipuram', 1, 0, 0),
-    ('Coimbatore Race Course', 2, 2, 8),
-    ('Coimbatore Hopes College', 3, 5, 15),
-    ('Coimbatore Peelamedu', 4, 7, 20),
-    ('Coimbatore Singanallur', 5, 10, 28)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'TNSTC-CBE-01';
-
--- Route TNSTC-CBE-01A: Gandhipuram - Singanallur (via Peelamedu)
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Coimbatore Gandhipuram', 1, 0, 0),
-    ('Coimbatore Sungam', 2, 2, 6),
-    ('Coimbatore Nava India', 3, 4, 12),
-    ('Coimbatore Peelamedu', 4, 6, 18),
-    ('Coimbatore Goldwins', 5, 8, 24),
-    ('Coimbatore Singanallur', 6, 10, 30)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'TNSTC-CBE-01A';
-
--- Route TNSTC-CBE-03: Ukkadam - Pollachi
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Coimbatore Ukkadam', 1, 0, 0),
-    ('Coimbatore Kuniyamuthur', 2, 5, 15),
-    ('Coimbatore Perur', 3, 10, 25),
-    ('Pollachi Bus Stand', 4, 40, 60)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'TNSTC-CBE-03';
-
--- Route TNSTC-CBE-04: Gandhipuram - Tiruppur
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Coimbatore Gandhipuram', 1, 0, 0),
-    ('Coimbatore Saibaba Colony', 2, 3, 10),
-    ('Coimbatore Saravanampatty', 3, 8, 20),
-    ('Avinashi', 4, 30, 40),
-    ('Tiruppur New Bus Stand', 5, 50, 60)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'TNSTC-CBE-04';
-
--- Route TNSTC-CBE-05: Gandhipuram - Ukkadam
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Coimbatore Gandhipuram', 1, 0, 0),
-    ('Coimbatore Town Hall', 2, 2, 8),
-    ('Coimbatore Big Bazaar Street', 3, 3, 12),
-    ('Coimbatore Ukkadam', 4, 5, 18)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'TNSTC-CBE-05';
-
--- Route TNSTC-CBE-05A: Gandhipuram - Ukkadam (via RS Puram)
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Coimbatore Gandhipuram', 1, 0, 0),
-    ('Coimbatore Lakshmi Mills', 2, 2, 6),
-    ('Coimbatore RS Puram', 3, 3, 10),
-    ('Coimbatore Town Hall', 4, 5, 16),
-    ('Coimbatore Ukkadam', 5, 7, 22)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'TNSTC-CBE-05A';
-
--- Route TNSTC-CBE-06: Singanallur - Ondipudur
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Coimbatore Singanallur', 1, 0, 0),
-    ('Coimbatore Goldwins', 2, 2, 6),
-    ('Coimbatore Ondipudur', 3, 6, 18)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'TNSTC-CBE-06';
-
--- Madurai City Routes
-
--- Route MDU-01: Mattuthavani - Periyar
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Madurai Mattuthavani', 1, 0, 0),
-    ('Madurai Anna Nagar', 2, 3, 10),
-    ('Madurai Railway Station', 3, 5, 18),
-    ('Madurai Periyar Bus Stand', 4, 6, 22)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'MDU-01';
-
--- Route MDU-02: Periyar - Anna Nagar
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Madurai Periyar Bus Stand', 1, 0, 0),
-    ('Madurai Meenakshi Temple', 2, 1, 5),
-    ('Madurai Goripalayam', 3, 3, 12),
-    ('Madurai KK Nagar', 4, 6, 20),
-    ('Madurai Anna Nagar', 5, 8, 28)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'MDU-02';
-
--- Route MDU-03: Mattuthavani - Othakadai
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Madurai Mattuthavani', 1, 0, 0),
-    ('Madurai Jaihindpuram', 2, 3, 10),
-    ('Madurai Bypass Road', 3, 6, 18),
-    ('Madurai Othakadai', 4, 8, 25)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'MDU-03';
-
--- Trichy City Routes
-
--- Route TRY-01: Central - Srirangam
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Trichy Central Bus Stand', 1, 0, 0),
-    ('Trichy Thillai Nagar', 2, 2, 8),
-    ('Trichy Crawford', 3, 4, 14),
-    ('Trichy Srirangam', 4, 8, 25)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'TRY-01';
-
--- Route TRY-02: Central - Chatram
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Trichy Central Bus Stand', 1, 0, 0),
-    ('Trichy Junction', 2, 2, 6),
-    ('Trichy Palakkarai', 3, 3, 10),
-    ('Trichy Chatram Bus Stand', 4, 5, 16)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'TRY-02';
-
--- Route TRY-03: Chatram - Thiruverumbur
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Trichy Chatram Bus Stand', 1, 0, 0),
-    ('Trichy Puthur', 2, 2, 8),
-    ('Trichy Khajamalai', 3, 5, 15),
-    ('Trichy Thiruverumbur', 4, 8, 25)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'TRY-03';
-
--- Nagercoil City Routes
-
--- Route NKL-01: Bus Stand - Kanyakumari
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Nagercoil Bus Stand', 1, 0, 0),
-    ('Nagercoil Kottar', 2, 2, 8),
-    ('Nagercoil Town', 3, 4, 14),
-    ('Parvathipuram', 4, 8, 22),
-    ('Kanyakumari', 5, 22, 45)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'NKL-01';
-
--- Route NKL-02: Bus Stand - Marthandam
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Nagercoil Bus Stand', 1, 0, 0),
-    ('Nagercoil Junction', 2, 1, 5),
-    ('Nagercoil Medical College', 3, 5, 15),
-    ('Thuckalay', 4, 15, 30),
-    ('Marthandam', 5, 25, 45)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'NKL-02';
-
--- Route NKL-03: Junction - Suchindram
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Nagercoil Junction', 1, 0, 0),
-    ('Nagercoil Vadasery', 2, 2, 6),
-    ('Nagercoil Kottar', 3, 4, 12),
-    ('Suchindram', 4, 10, 25)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'NKL-03';
-
--- Route TNSTC-NKL-TV: Nagercoil - Tirunelveli
-INSERT INTO route_stops (route_id, stop_id, stop_sequence, distance_from_start, arrival_offset_mins)
-SELECT r.id, s.id, seq.sequence, seq.distance, seq.time_offset
-FROM routes r, 
-LATERAL (VALUES
-    ('Nagercoil Bus Stand', 1, 0, 0),
-    ('Valliyoor', 2, 55, 70),
-    ('Tirunelveli New Bus Stand', 3, 90, 110)
-) AS seq(stop_name, sequence, distance, time_offset)
-JOIN stops s ON s.name = seq.stop_name
-WHERE r.route_number = 'TNSTC-NKL-TV';
+WHERE r.route_number = '500A';
 
 
 -- =====================================================
--- VEHICLES (Sample buses)
+-- VEHICLES (Sample BMTC Buses)
 -- =====================================================
 
 INSERT INTO vehicles (vehicle_number, route_id, transport_type, current_stop_id, status)
@@ -908,42 +538,37 @@ SELECT
     s.id,
     v.status
 FROM (VALUES
-    ('TN-01-AB-1234', 'SETC-001', 'Chennai CMBT (Koyambedu)', 'running'),
-    ('TN-01-AB-1235', 'SETC-001', 'Salem New Bus Stand', 'running'),
-    ('TN-01-CD-5678', 'SETC-002', 'Chennai CMBT (Koyambedu)', 'running'),
-    ('TN-01-CD-5679', 'SETC-002', 'Trichy Central Bus Stand', 'running'),
-    ('TN-01-CD-6789', 'SETC-002A', 'Villupuram Bus Stand', 'running'),
-    ('TN-01-EF-9012', 'SETC-003', 'Madurai Mattuthavani', 'running'),
-    ('TN-36-AB-7890', 'SETC-004', 'Coimbatore Gandhipuram', 'running'),
-    ('TN-36-CD-1234', 'SETC-006', 'Dindigul Bus Stand', 'running'),
-    ('TN-36-CD-5678', 'SETC-006A', 'Palani Bus Stand', 'running'),
-    ('TN-38-AB-5678', 'TNSTC-137', 'Pondicherry Bus Stand', 'running'),
-    ('TN-38-AB-5679', 'TNSTC-137A', 'Chennai Tambaram', 'running'),
-    ('TN-45-CD-9012', 'TNSTC-227', 'Pudukottai Bus Stand', 'running'),
-    ('TN-36-EF-3456', 'TNSTC-317', 'Erode Bus Stand', 'running'),
-    ('TN-72-AB-7890', 'TNSTC-401', 'Virudhunagar Bus Stand', 'running'),
-    ('TN-72-CD-1234', 'TNSTC-501', 'Valliyoor', 'running'),
-    ('TN-74-AB-5678', 'TNSTC-601', 'Nagercoil Bus Stand', 'running'),
-    ('TN-09-MTC-2100', 'MTC-21C', 'Chennai T.Nagar', 'running'),
-    ('TN-09-MTC-2101', 'MTC-21D', 'Chennai Guindy', 'running'),
-    ('TN-09-MTC-2700', 'MTC-27', 'Chennai Guindy', 'running'),
-    ('TN-09-MTC-2701', 'MTC-27A', 'Chennai Saidapet', 'running'),
-    ('TN-09-MTC-2900', 'MTC-29C', 'Chennai Velachery', 'running'),
-    ('TN-09-MTC-0500', 'MTC-5', 'Chennai Perambur', 'running'),
-    ('TN-09-MTC-1500', 'MTC-15', 'Chennai Anna Nagar', 'running'),
-    ('TN-09-MTC-4700', 'MTC-47', 'Chennai Guindy', 'running'),
-    ('TN-09-MTC-4701', 'MTC-47B', 'Chennai CMBT (Koyambedu)', 'running'),
-    ('TN-36-GH-7890', 'TNSTC-CBE-01', 'Coimbatore Peelamedu', 'running'),
-    ('TN-36-GH-7891', 'TNSTC-CBE-01A', 'Coimbatore Sungam', 'running'),
-    ('TN-36-GH-7892', 'TNSTC-CBE-04', 'Avinashi', 'running'),
-    ('TN-36-GH-7893', 'TNSTC-CBE-05', 'Coimbatore Town Hall', 'running'),
-    ('TN-36-GH-7894', 'TNSTC-CBE-05A', 'Coimbatore RS Puram', 'running'),
-    ('TN-59-MDU-0100', 'MDU-01', 'Madurai Railway Station', 'running'),
-    ('TN-59-MDU-0200', 'MDU-02', 'Madurai KK Nagar', 'running'),
-    ('TN-45-TRY-0100', 'TRY-01', 'Trichy Crawford', 'running'),
-    ('TN-45-TRY-0200', 'TRY-02', 'Trichy Junction', 'running'),
-    ('TN-74-NKL-0100', 'NKL-01', 'Nagercoil Town', 'running'),
-    ('TN-74-NKL-0200', 'NKL-02', 'Thuckalay', 'running')
+    ('KA-01-F-1234', 'V-500C', 'Silk Board Junction', 'running'),
+    ('KA-01-F-1235', 'V-500C', 'Electronic City Bus Station', 'running'),
+    ('KA-01-F-1236', 'V-500C', 'Kempegowda Bus Station (Majestic)', 'running'),
+    ('KA-01-F-2345', 'V-500CA', 'Koramangala 1st Block', 'running'),
+    ('KA-01-F-2346', 'V-500CA', 'HSR Layout BDA Complex', 'running'),
+    ('KA-01-F-3456', 'V-500NA', 'Marathahalli', 'running'),
+    ('KA-01-F-3457', 'V-500NA', 'Indiranagar 100 Feet Road', 'running'),
+    ('KA-01-F-3458', 'V-500NA', 'ITPL (International Tech Park)', 'running'),
+    ('KA-01-F-4567', 'V-335E', 'MG Road', 'running'),
+    ('KA-01-F-4568', 'V-335E', 'Bellandur', 'running'),
+    ('KA-01-F-5678', 'V-356', 'Hebbal Flyover', 'running'),
+    ('KA-01-F-5679', 'V-356', 'Manyata Tech Park', 'running'),
+    ('KA-01-F-6789', 'KIA-4', 'Yelahanka', 'running'),
+    ('KA-01-F-6790', 'KIA-4', 'Kempegowda International Airport', 'running'),
+    ('KA-01-F-7890', 'KIA-7', 'MG Road', 'running'),
+    ('KA-01-F-8901', '401', 'Jayanagar 4th Block TTMC', 'running'),
+    ('KA-01-F-8902', '401', 'BTM Layout 2nd Stage', 'running'),
+    ('KA-01-F-8903', '401', 'Electronic City Bus Station', 'running'),
+    ('KA-01-F-9012', '201', 'Indiranagar Metro Station', 'running'),
+    ('KA-01-F-9013', '201', 'Marathahalli', 'running'),
+    ('KA-01-F-9014', '201', 'Whitefield TTMC', 'running'),
+    ('KA-01-F-1123', '276', 'Mekhri Circle', 'running'),
+    ('KA-01-F-1124', '276', 'Yelahanka', 'running'),
+    ('KA-01-F-2234', '210', 'Basavanagudi', 'running'),
+    ('KA-01-F-2235', '210', 'Banashankari TTMC', 'running'),
+    ('KA-01-F-3345', '252', 'Vijayanagar TTMC', 'running'),
+    ('KA-01-F-3346', '252', 'Kengeri TTMC', 'running'),
+    ('KA-01-F-4456', '365', 'Bellandur', 'running'),
+    ('KA-01-F-4457', '365', 'Marathahalli', 'running'),
+    ('KA-01-F-5567', '500A', 'Koramangala 4th Block', 'running'),
+    ('KA-01-F-5568', '500A', 'HSR Layout BDA Complex', 'running')
 ) AS v(vehicle_number, route_number, stop_name, status)
 JOIN routes r ON r.route_number = v.route_number
 JOIN stops s ON s.name = v.stop_name;

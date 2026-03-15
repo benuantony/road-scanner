@@ -1,141 +1,195 @@
-# Tamil Nadu Bus Finder 🚌
+# 🚌 Bangalore Route Finder
 
-A real-time bus route finder and tracker for Tamil Nadu, India. Search for bus routes connecting Chennai, Coimbatore, Nagercoil and 80+ cities across Tamil Nadu.
+A modern, real-time BMTC (Bangalore Metropolitan Transport Corporation) bus route finder with live tracking capabilities. Built with React, Node.js, PostgreSQL, and featuring a sleek dark UI with neon-glowing route visualization.
 
-![Tamil Nadu Bus Finder](https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80)
+![Bangalore Route Finder](https://images.unsplash.com/photo-1596176530529-78163a4f7af2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80)
 
-## Features
+## ✨ Features
 
-- 🔍 **Route Search**: Find bus routes between any two stops
-- 🗺️ **Interactive Map**: View routes on an interactive map with actual road paths (powered by OSRM)
-- 📍 **80+ Bus Stops**: Comprehensive coverage of Chennai, Coimbatore, Nagercoil and surrounding areas
-- 🚌 **Live Tracking**: Real-time bus location tracking
-- 🛤️ **20+ Routes**: SETC and TNSTC bus routes
+- **🔍 Route Search**: Find BMTC bus routes between any two stops in Bangalore
+- **📍 Live Tracking**: Real-time bus location tracking with WebSocket updates
+- **🗺️ Dark Map View**: Grayscale map with glowing neon route visualization
+- **📊 ETA Timeline**: Detailed stop-by-stop estimated arrival times
+- **🚏 120+ Bus Stops**: Comprehensive coverage of Bangalore including:
+  - Majestic (Kempegowda Bus Station)
+  - Electronic City
+  - Whitefield / ITPL
+  - Koramangala
+  - Indiranagar
+  - Banashankari
+  - Jayanagar
+  - Hebbal / Yelahanka
+  - And many more...
+- **🛤️ 40+ Routes**: Including Volvo AC, Vayu Vajra (Airport), and regular BMTC routes
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-- **Frontend**: React, TypeScript, Tailwind CSS, Leaflet
-- **Backend**: Node.js, Express
-- **Database**: PostgreSQL
-- **Maps**: OpenStreetMap + OSRM (Open Source Routing Machine)
+### Frontend
+- **React 18** with TypeScript
+- **Vite** for fast development
+- **Tailwind CSS** for styling
+- **React-Leaflet** for maps
+- **WebSocket** for real-time updates
 
-## Quick Start
+### Backend
+- **Node.js** with Express
+- **PostgreSQL** for data storage
+- **WebSocket (ws)** for live tracking
+- **OSRM** for road-snapped routes
+
+### Data
+- **GTFS-based** stop and route data
+- Real BMTC bus stops with accurate coordinates
+- Proper route sequences with ETA information
+
+## 🚀 Quick Start
 
 ### Prerequisites
-
-- Node.js 18+
 - Docker & Docker Compose
-- npm or yarn
+- Node.js 18+ (for local development)
 
-### Installation
+### Using Docker (Recommended)
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/benuantony/road-scanner.git
-   cd road-scanner
-   ```
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/bangalore-route-finder.git
+cd bangalore-route-finder
 
-2. **Start the database**
-   ```bash
-   docker-compose up -d
-   ```
+# Start all services
+docker-compose up -d
 
-3. **Install backend dependencies**
-   ```bash
-   cd backend
-   npm install
-   ```
+# View logs
+docker-compose logs -f
+```
 
-4. **Install frontend dependencies**
-   ```bash
-   cd ../frontend
-   npm install
-   ```
+The application will be available at:
+- **Frontend**: http://localhost:5173
+- **Backend API**: http://localhost:3000
+- **PostgreSQL**: localhost:5432
 
-5. **Start the backend server**
-   ```bash
-   cd ../backend
-   npm run dev
-   ```
+### Local Development
 
-6. **Start the frontend development server**
-   ```bash
-   cd ../frontend
-   npm run dev
-   ```
+```bash
+# Install backend dependencies
+cd backend
+npm install
 
-7. **Open in browser**
-   ```
-   http://localhost:5173
-   ```
+# Install frontend dependencies
+cd ../frontend
+npm install
 
-## Project Structure
+# Start PostgreSQL (using Docker)
+docker-compose up -d db
+
+# Start backend (in backend folder)
+npm run dev
+
+# Start frontend (in frontend folder)
+npm run dev
+```
+
+## 📁 Project Structure
 
 ```
-road-scanner/
-├── frontend/                 # React frontend
+bangalore-route-finder/
+├── frontend/                # React frontend
 │   ├── src/
-│   │   ├── components/      # React components
-│   │   │   ├── App.tsx      # Main app with hero section
-│   │   │   ├── SearchBar.tsx
-│   │   │   ├── RouteMap.tsx # Map with OSRM integration
-│   │   │   ├── RouteList.tsx
-│   │   │   └── LiveTracker.tsx
-│   │   ├── hooks/           # Custom hooks
-│   │   ├── services/        # API services
-│   │   └── types/           # TypeScript types
+│   │   ├── components/     # UI components
+│   │   │   ├── RouteMap.tsx       # Dark map with glowing routes
+│   │   │   ├── RouteList.tsx      # Route cards with ETA
+│   │   │   ├── SearchBar.tsx      # Stop search
+│   │   │   └── LiveTracker.tsx    # Vehicle tracking
+│   │   ├── hooks/          # Custom hooks
+│   │   ├── services/       # API services
+│   │   └── types/          # TypeScript types
 │   └── ...
-├── backend/                  # Node.js backend
+├── backend/                 # Node.js backend
 │   ├── src/
-│   │   ├── controllers/     # Route controllers
-│   │   ├── routes/          # API routes
-│   │   └── config/          # Database config
+│   │   ├── controllers/    # Route handlers
+│   │   ├── routes/         # API routes
+│   │   └── config/         # Configuration
 │   └── ...
-├── database/                 # Database initialization
+├── database/               # Database files
 │   └── init/
-│       ├── 01-schema.sql    # Database schema
-│       └── 02-seed-data.sql # Bus stops & routes data
-└── docker-compose.yml       # Docker configuration
+│       ├── 01-schema.sql   # Database schema
+│       └── 02-seed-data.sql # BMTC data (stops, routes)
+├── scripts/                # Utility scripts
+│   └── parse-gtfs.js       # GTFS parser
+└── docker-compose.yml
 ```
 
-## Coverage Areas
+## 🎨 UI Features
 
-### Major Bus Stands
-- **Chennai**: CMBT (Koyambedu), Tambaram
-- **Coimbatore**: Gandhipuram, Ukkadam, Singanallur
-- **Nagercoil**: Main Bus Stand, Kanyakumari
+### Dark Theme with Neon Accents
+- Grayscale CartoDB Dark Matter map tiles
+- Glowing cyan route lines
+- Purple accent for terminals
+- Glass-morphism effects
 
-### Routes Covered
-- Chennai - Coimbatore Express (via Salem)
-- Chennai - Madurai Express
-- Chennai - Nagercoil Express
-- Coimbatore - Nagercoil Express
-- And many more regional routes...
+### ETA Timeline
+- Visual stop-by-stop progression
+- Estimated arrival times
+- Distance markers
+- Terminal highlighting
 
-## API Endpoints
+### Live Tracking
+- Real-time bus positions
+- Progress indicators
+- Status badges (Running/Delayed)
+- WebSocket-powered updates
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/stops/search` | GET | Search bus stops |
-| `/api/routes/find` | GET | Find routes between stops |
-| `/api/routes/:id` | GET | Get route details |
-| `/api/vehicles` | GET | Get live vehicle positions |
+## 📡 API Endpoints
 
-## Contributing
+### Stops
+- `GET /api/stops/search?q={query}` - Search stops
+- `GET /api/stops/:id` - Get stop by ID
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+### Routes
+- `GET /api/routes/find?from={id}&to={id}` - Find routes
+- `GET /api/routes/:id` - Get route details
+- `GET /api/routes` - List all routes
 
-## License
+### Vehicles
+- `GET /api/vehicles` - Get all vehicles
+- `GET /api/vehicles/route/:routeId` - Vehicles on route
 
-This project is licensed under the MIT License.
+### WebSocket
+- `ws://localhost:3000` - Live vehicle updates
 
-## Acknowledgments
+## 🗺️ Supported Areas
 
+The app covers major areas in Bangalore:
+
+| Area | Coverage |
+|------|----------|
+| Central | Majestic, Shivajinagar, MG Road, Cubbon Park |
+| South | Electronic City, Koramangala, JP Nagar, Banashankari, Jayanagar |
+| East | Whitefield, ITPL, Marathahalli, Indiranagar |
+| North | Hebbal, Yelahanka, Manyata Tech Park |
+| West | Rajajinagar, Malleshwaram, Vijayanagar |
+| Airport | Kempegowda International Airport |
+
+## 🔧 Configuration
+
+### Environment Variables
+
+**Backend (.env)**
+```env
+PORT=3000
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=road_scanner
+DB_USER=postgres
+DB_PASSWORD=postgres
+```
+
+## 📝 License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+## 🙏 Acknowledgments
+
+- [BMTC](https://mybmtc.karnataka.gov.in/) for route information
 - [OpenStreetMap](https://www.openstreetmap.org/) for map data
-- [OSRM](http://project-osrm.org/) for routing engine
-- [Leaflet](https://leafletjs.com/) for map library
-- [Unsplash](https://unsplash.com/) for hero image
+- [CARTO](https://carto.com/) for dark map tiles
+- [Project OSRM](http://project-osrm.org/) for routing

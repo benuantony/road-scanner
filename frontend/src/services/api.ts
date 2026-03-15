@@ -86,3 +86,76 @@ export const vehiclesApi = {
     return response.json();
   },
 };
+
+// GTFS Import Types
+export interface GTFSSource {
+  id: string;
+  name: string;
+  url: string;
+}
+
+export interface GTFSStatus {
+  status: string;
+  data: {
+    stops: number;
+    routes: number;
+    route_stops: number;
+  };
+  available_sources: Record<string, string>;
+}
+
+export interface GTFSImportResult {
+  success: boolean;
+  source: string;
+  imported_at: string;
+  stats: {
+    stops: number;
+    routes: number;
+    route_stops: number;
+  };
+  error?: string;
+  message?: string;
+}
+
+// GTFS Import API
+export const gtfsApi = {
+  // Get current data status
+  getStatus: async (): Promise<GTFSStatus> => {
+    const response = await fetch(`${API_BASE}/gtfs/status`);
+    if (!response.ok) throw new Error('Failed to get GTFS status');
+    return response.json();
+  },
+
+  // Get available GTFS sources
+  getSources: async (): Promise<{ sources: GTFSSource[] }> => {
+    const response = await fetch(`${API_BASE}/gtfs/sources`);
+    if (!response.ok) throw new Error('Failed to get GTFS sources');
+    return response.json();
+  },
+
+  // Import GTFS data from URL or predefined source
+  import: async (urlOrSource: string, isSource = false): Promise<GTFSImportResult> => {
+    const body = isSource ? { source: urlOrSource } : { url: urlOrSource };
+    
+    const response = await fetch(`${API_BASE}/gtfs/import`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || result.error || 'Failed to import GTFS');
+    }
+    return result;
+  },
+
+  // Clear all data
+  clearData: async (): Promise<{ success: boolean; message: string }> => {
+    const response = await fetch(`${API_BASE}/gtfs/data`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) throw new Error('Failed to clear data');
+    return response.json();
+  },
+};

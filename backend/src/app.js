@@ -7,6 +7,7 @@ require('dotenv').config();
 const apiRoutes = require('./routes/api');
 const { simulateMovement } = require('./controllers/vehiclesController');
 const db = require('./config/database');
+const { initMetroData } = require('./services/metroService');
 
 const app = express();
 const server = http.createServer(app);
@@ -188,15 +189,22 @@ process.on('SIGINT', gracefulShutdown);
 // Start server
 const PORT = process.env.PORT || 3001;
 
-server.listen(PORT, () => {
+server.listen(PORT, async () => {
   console.log(`
-🚌 Tamil Nadu Bus & Train Routes API
+🚌🚇 Bangalore Transit API
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🌐 Server running on http://localhost:${PORT}
 📡 WebSocket available at ws://localhost:${PORT}/ws/tracking
 📚 API Documentation at http://localhost:${PORT}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   `);
+  
+  // Initialize metro data if not present
+  try {
+    await initMetroData();
+  } catch (error) {
+    console.error('⚠️ Metro data initialization failed:', error.message);
+  }
   
   // Start simulation after server starts
   startSimulation();
