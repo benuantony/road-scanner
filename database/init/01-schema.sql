@@ -60,3 +60,23 @@ CREATE TABLE vehicles (
 
 CREATE INDEX idx_vehicles_route ON vehicles(route_id);
 CREATE INDEX idx_vehicles_status ON vehicles(status);
+
+-- =====================================================
+-- OWNERSHIP & PERMISSIONS
+-- Grant ownership to roadscanner user for all tables and sequences
+-- This is required because init scripts run as postgres superuser
+-- =====================================================
+
+ALTER TABLE stops OWNER TO roadscanner;
+ALTER TABLE routes OWNER TO roadscanner;
+ALTER TABLE route_stops OWNER TO roadscanner;
+ALTER TABLE vehicles OWNER TO roadscanner;
+
+ALTER SEQUENCE stops_id_seq OWNER TO roadscanner;
+ALTER SEQUENCE routes_id_seq OWNER TO roadscanner;
+ALTER SEQUENCE route_stops_id_seq OWNER TO roadscanner;
+ALTER SEQUENCE vehicles_id_seq OWNER TO roadscanner;
+
+-- Grant all privileges to roadscanner user
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO roadscanner;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO roadscanner;
