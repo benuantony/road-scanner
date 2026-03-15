@@ -5,7 +5,7 @@ const WebSocket = require('ws');
 require('dotenv').config();
 
 const apiRoutes = require('./routes/api');
-const { simulateMovement } = require('./controllers/vehiclesController');
+const { simulateMovement, ensureVehiclesForRoutes } = require('./controllers/vehiclesController');
 const db = require('./config/database');
 const { initMetroData } = require('./services/metroService');
 
@@ -65,7 +65,7 @@ wss.on('connection', (ws) => {
   console.log('🔌 New WebSocket client connected');
   clients.add(ws);
 
-  ws.on('message', (message) => {
+  ws.on('message', async (message) => {
     try {
       const data = JSON.parse(message);
       console.log('📨 Received:', data);
@@ -73,7 +73,14 @@ wss.on('connection', (ws) => {
       // Handle subscription to specific routes
       if (data.type === 'subscribe' && data.routeIds) {
         ws.subscribedRoutes = data.routeIds;
+        
+        // Ensure vehicles exist for these routes
+        await ensureVehiclesForRoutes(data.routeIds);
+        
         ws.send(JSON.stringify({ type: 'subscribed', routeIds: data.routeIds }));
+        
+        // Send immediate update with newly created vehicles
+        setTimeout(() => broadcastVehiclePositions(), 500);
       }
     } catch (error) {
       console.error('Error parsing WebSocket message:', error);

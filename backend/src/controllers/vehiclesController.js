@@ -1,5 +1,74 @@
 const db = require('../config/database');
 
+// Ensure a vehicle exists for a route (creates one if needed)
+const ensureVehicleForRoute = async (routeId) => {
+  try {
+    // Check if vehicle exists for this route
+    const existing = await db.query(
+      'SELECT id FROM vehicles WHERE route_id = $1 LIMIT 1',
+      [routeId]
+    );
+
+    if (existing.rows.length > 0) {
+      return existing.rows[0].id;
+    }
+
+    // Get route info and first stop
+    const routeInfo = await db.query(`
+      SELECT r.id, r.route_number, r.transport_type,
+        rs.stop_id as first_stop_id,
+        s.latitude, s.longitude
+      FROM routes r
+      JOIN route_stops rs ON r.id = rs.route_id AND rs.stop_sequence = 1
+      JOIN stops s ON rs.stop_id = s.id
+      WHERE r.id = $1
+    `, [routeId]);
+
+    if (routeInfo.rows.length === 0) return null;
+
+    const route = routeInfo.rows[0];
+    
+    // Get second stop as next
+    const nextStopResult = await db.query(`
+      SELECT rs.stop_id
+      FROM route_stops rs
+      WHERE rs.route_id = $1 AND rs.stop_sequence = 2
+    `, [routeId]);
+    
+    const nextStopId = nextStopResult.rows[0]?.stop_id || null;
+    
+    // Generate vehicle number
+    const vehicleNumber = route.transport_type === 'metro' 
+      ? `NM-${route.route_number.substring(0, 2).toUpperCase()}-${String(routeId).padStart(3, '0')}`
+      : `KA-${51 + (routeId % 10)}-F-${String(1000 + routeId).slice(-4)}`;
+
+    // Create new vehicle
+    const result = await db.query(`
+      INSERT INTO vehicles (
+        vehicle_number, route_id, transport_type, current_stop_id, next_stop_id,
+        current_latitude, current_longitude, progress_percent, status
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'running')
+      RETURNING id
+    `, [
+      vehicleNumber, routeId, route.transport_type, route.first_stop_id, nextStopId,
+      route.latitude, route.longitude, Math.random() * 30 // Random starting progress
+    ]);
+
+    console.log(`🚌 Created vehicle ${vehicleNumber} for route ${route.route_number}`);
+    return result.rows[0].id;
+  } catch (error) {
+    console.error('Error ensuring vehicle:', error);
+    return null;
+  }
+};
+
+// Ensure vehicles exist for multiple routes
+const ensureVehiclesForRoutes = async (routeIds) => {
+  for (const routeId of routeIds) {
+    await ensureVehicleForRoute(routeId);
+  }
+};
+
 // Get vehicles for a specific route
 const getVehiclesByRoute = async (req, res) => {
   try {
@@ -224,4 +293,6 @@ module.exports = {
   getAllVehicles,
   getVehicleById,
   simulateMovement,
+  ensureVehicleForRoute,
+  ensureVehiclesForRoutes,
 };
