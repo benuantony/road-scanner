@@ -104,7 +104,11 @@ const findRoutes = async (req, res) => {
     const result = await db.query(query, params);
 
     // Filter stops to only include from origin to destination
-    const routes = result.rows.map(route => {
+    const routeMap = new Map();
+    
+    result.rows.forEach(route => {
+      // Only keep one version of each route (by route_id)
+      // Prefer the one with fewer stops (more direct)
       const fromIndex = route.stops.findIndex(s => s.stop_id === route.from_stop_id);
       const toIndex = route.stops.findIndex(s => s.stop_id === route.to_stop_id);
       
@@ -113,21 +117,34 @@ const findRoutes = async (req, res) => {
         Math.min(route.stops.length, toIndex + 1)
       );
 
-      return {
-        id: route.id,
-        route_number: route.route_number,
-        route_name: route.route_name,
-        transport_type: route.transport_type,
-        operator: route.operator,
-        frequency_mins: route.frequency_mins,
-        stops: filteredStops,
-        total_distance: filteredStops.length > 1 
-          ? (filteredStops[filteredStops.length - 1]?.distance || 0) - (filteredStops[0]?.distance || 0)
-          : 0,
-        total_time: filteredStops.length > 1 
-          ? (filteredStops[filteredStops.length - 1]?.time_offset || 0) - (filteredStops[0]?.time_offset || 0)
-          : 0,
-      };
+      const existing = routeMap.get(route.id);
+      if (!existing || filteredStops.length < existing.stops.length) {
+        routeMap.set(route.id, {
+          id: route.id,
+          route_number: route.route_number,
+          route_name: route.route_name,
+          transport_type: route.transport_type,
+          operator: route.operator,
+          frequency_mins: route.frequency_mins,
+          stops: filteredStops,
+          total_distance: filteredStops.length > 1 
+            ? (filteredStops[filteredStops.length - 1]?.distance || 0) - (filteredStops[0]?.distance || 0)
+            : 0,
+          total_time: filteredStops.length > 1 
+            ? (filteredStops[filteredStops.length - 1]?.time_offset || 0) - (filteredStops[0]?.time_offset || 0)
+            : 0,
+        });
+      }
+    });
+
+    // Convert to array and sort
+    const routes = Array.from(routeMap.values()).sort((a, b) => {
+      // Sort by transport type first (metro before bus for visibility)
+      if (a.transport_type !== b.transport_type) {
+        return a.transport_type === 'metro' ? -1 : 1;
+      }
+      // Then by number of stops (fewer = more direct)
+      return a.stops.length - b.stops.length;
     });
 
     res.json(routes);

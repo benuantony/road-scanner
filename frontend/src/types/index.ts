@@ -6,7 +6,7 @@ export interface Stop {
   latitude: number;
   longitude: number;
   district: string;
-  stop_type: 'bus' | 'train' | 'both';
+  stop_type: 'bus' | 'train' | 'metro' | 'both';
 }
 
 // Route stop (stop within a route)
@@ -27,7 +27,7 @@ export interface Route {
   id: number;
   route_number: string;
   route_name: string;
-  transport_type: 'bus' | 'train';
+  transport_type: 'bus' | 'train' | 'metro';
   operator: string;
   frequency_mins?: number;
   stops: RouteStop[];
@@ -39,7 +39,7 @@ export interface Route {
 export interface Vehicle {
   id: number;
   vehicle_number: string;
-  transport_type: 'bus' | 'train';
+  transport_type: 'bus' | 'train' | 'metro';
   status: 'running' | 'stopped' | 'delayed' | 'completed';
   progress_percent: number;
   current_latitude: number;
