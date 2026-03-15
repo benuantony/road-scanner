@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Route, Vehicle } from '../types';
 
 interface RouteTimelineProps {
@@ -11,7 +11,6 @@ interface RouteTimelineProps {
 export default function RouteTimeline({ route, vehicles, isConnected, onClose }: RouteTimelineProps) {
   const stops = route.stops || [];
   const isMetro = route.transport_type === 'metro';
-  const [showStopList, setShowStopList] = useState(true); // Default to showing stop list
   
   // Simulate current stop index based on timestamp (randomized per route)
   const currentStopIndex = useMemo(() => {

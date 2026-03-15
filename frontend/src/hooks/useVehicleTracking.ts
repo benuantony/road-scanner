@@ -12,7 +12,7 @@ export function useVehicleTracking(options: UseVehicleTrackingOptions = {}) {
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
+  const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const connect = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
@@ -60,11 +60,11 @@ export function useVehicleTracking(options: UseVehicleTrackingOptions = {}) {
         wsRef.current = null;
 
         // Attempt to reconnect after 3 seconds
-        reconnectTimeoutRef.current = setTimeout(() => {
-          if (autoConnect) {
+        if (autoConnect) {
+          reconnectTimeoutRef.current = setTimeout(() => {
             connect();
-          }
-        }, 3000);
+          }, 3000);
+        }
       };
     } catch (err) {
       console.error('Failed to create WebSocket:', err);
@@ -73,8 +73,9 @@ export function useVehicleTracking(options: UseVehicleTrackingOptions = {}) {
   }, [routeIds, autoConnect]);
 
   const disconnect = useCallback(() => {
-    if (reconnectTimeoutRef.current) {
+    if (reconnectTimeoutRef.current !== null) {
       clearTimeout(reconnectTimeoutRef.current);
+      reconnectTimeoutRef.current = null;
     }
     if (wsRef.current) {
       wsRef.current.close();
