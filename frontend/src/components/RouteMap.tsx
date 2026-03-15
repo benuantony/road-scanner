@@ -43,11 +43,23 @@ const createStopIcon = (isSelected: boolean, index?: number, total?: number, tra
   });
 };
 
-const createVehicleIcon = (transportType: string = 'bus') => {
+// Get emoji and color based on transport type and operator
+const getVehicleEmoji = (transportType: string = 'bus', operator?: string) => {
+  if (transportType === 'metro') {
+    return { emoji: '🚇', color: 'rgba(139, 92, 246, 0.4)' }; // Purple for metro
+  }
+  if (operator?.includes('Volvo')) {
+    return { emoji: '🚎', color: 'rgba(37, 99, 235, 0.4)' }; // Blue for Volvo AC
+  }
+  if (operator?.includes('Vajra')) {
+    return { emoji: '🚐', color: 'rgba(249, 115, 22, 0.4)' }; // Orange for Vajra
+  }
+  return { emoji: '🚌', color: 'rgba(34, 197, 94, 0.4)' }; // Green for regular
+};
+
+const createVehicleIcon = (transportType: string = 'bus', operator?: string) => {
   const size = 44;
-  const isMetro = transportType === 'metro';
-  const emoji = isMetro ? '🚇' : '🚌';
-  const glowColor = isMetro ? 'rgba(139, 92, 246, 0.4)' : 'rgba(37, 99, 235, 0.4)';
+  const { emoji, color: glowColor } = getVehicleEmoji(transportType, operator);
   
   return L.divIcon({
     html: `
@@ -422,22 +434,22 @@ export default function RouteMap({ selectedRoute, vehicles, allRoutes = [], focu
           const stopsCompleted = currentStopIndex;
           const stopsRemaining = routeStops.length - 1 - currentStopIndex;
           const progressPercent = routeStops.length > 1 ? Math.round((currentStopIndex / (routeStops.length - 1)) * 100) : 0;
-          
+
           // Calculate ETA to destination
           const currentArrivalOffset = routeStops[currentStopIndex]?.arrival_offset || 0;
           const finalArrivalOffset = routeStops[routeStops.length - 1]?.arrival_offset || 0;
           const etaToDestination = finalArrivalOffset - currentArrivalOffset;
-          
+
           // Calculate predicted arrival time
           const now = new Date();
           const predictedArrival = new Date(now.getTime() + etaToDestination * 60000);
           const predictedArrivalStr = predictedArrival.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-          
+
           // Calculate next stop ETA
-          const nextStopOffset = currentStopIndex < routeStops.length - 1 
+          const nextStopOffset = currentStopIndex < routeStops.length - 1
             ? (routeStops[currentStopIndex + 1]?.arrival_offset || 0) - currentArrivalOffset
             : 0;
-          
+
           return (
             <Marker
               key="current-bus-position"
@@ -456,7 +468,7 @@ export default function RouteMap({ selectedRoute, vehicles, allRoutes = [], focu
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Current Location */}
                   <div className="px-4 py-3 bg-orange-50 border-b border-orange-100">
                     <div className="flex items-center gap-2">
@@ -465,7 +477,7 @@ export default function RouteMap({ selectedRoute, vehicles, allRoutes = [], focu
                     </div>
                     <p className="font-semibold text-gray-800 mt-1">{routeStops[currentStopIndex].stop_name}</p>
                   </div>
-                  
+
                   {/* Next Stop */}
                   {currentStopIndex < routeStops.length - 1 && (
                     <div className="px-4 py-3 border-b border-gray-100">
@@ -481,7 +493,7 @@ export default function RouteMap({ selectedRoute, vehicles, allRoutes = [], focu
                       <p className="font-medium text-gray-700 mt-1">{routeStops[currentStopIndex + 1].stop_name}</p>
                     </div>
                   )}
-                  
+
                   {/* Progress Section */}
                   <div className="px-4 py-3 border-b border-gray-100">
                     <div className="flex items-center justify-between text-sm mb-2">
@@ -498,7 +510,7 @@ export default function RouteMap({ selectedRoute, vehicles, allRoutes = [], focu
                         style={{ width: `${progressPercent}%` }}
                       />
                     </div>
-                    
+
                     {/* Stop indicators */}
                     <div className="flex justify-between mt-2 text-xs">
                       <div className="flex items-center gap-1">
@@ -511,7 +523,7 @@ export default function RouteMap({ selectedRoute, vehicles, allRoutes = [], focu
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* ETA Section */}
                   <div className="px-4 py-3 bg-gray-50">
                     <div className="grid grid-cols-2 gap-4">

@@ -105,13 +105,72 @@ export default function RouteList({
       return <span className="px-1.5 py-0.5 text-xs font-medium rounded bg-purple-100 text-purple-700">Metro</span>;
     }
     if (route.operator?.includes('Volvo')) {
-      return <span className="px-1.5 py-0.5 text-xs font-medium rounded bg-blue-100 text-blue-700">AC</span>;
+      return <span className="px-1.5 py-0.5 text-xs font-medium rounded bg-blue-100 text-blue-700">Volvo AC</span>;
     }
-    return <span className="px-1.5 py-0.5 text-xs font-medium rounded bg-green-100 text-green-700">Bus</span>;
+    if (route.operator?.includes('Vajra')) {
+      return <span className="px-1.5 py-0.5 text-xs font-medium rounded bg-orange-100 text-orange-700">Vajra</span>;
+    }
+    return <span className="px-1.5 py-0.5 text-xs font-medium rounded bg-green-100 text-green-700">Regular</span>;
   };
 
-  const getTransportIcon = (type: string | undefined) => {
-    return type?.toLowerCase() === 'metro' ? '🚇' : '🚌';
+  // Get icon based on transport type and operator
+  const getTransportIcon = (route: Route) => {
+    const type = route.transport_type?.toLowerCase();
+    if (type === 'metro') {
+      return '🚇'; // Metro
+    }
+    if (route.operator?.includes('Volvo')) {
+      return '🚎'; // Trolleybus/AC Bus for Volvo
+    }
+    if (route.operator?.includes('Vajra')) {
+      return '🚐'; // Minibus for Airport/Vajra
+    }
+    return '🚌'; // Regular bus
+  };
+
+  // Get operator color class
+  const getOperatorColorClass = (route: Route, isSelected: boolean) => {
+    const type = route.transport_type?.toLowerCase();
+    if (type === 'metro') {
+      return isSelected ? 'bg-purple-100' : 'bg-purple-50';
+    }
+    if (route.operator?.includes('Volvo')) {
+      return isSelected ? 'bg-blue-100' : 'bg-blue-50';
+    }
+    if (route.operator?.includes('Vajra')) {
+      return isSelected ? 'bg-orange-100' : 'bg-orange-50';
+    }
+    return isSelected ? 'bg-green-100' : 'bg-green-50';
+  };
+
+  // Get border color class
+  const getBorderColorClass = (route: Route) => {
+    const type = route.transport_type?.toLowerCase();
+    if (type === 'metro') {
+      return 'border-purple-500';
+    }
+    if (route.operator?.includes('Volvo')) {
+      return 'border-blue-500';
+    }
+    if (route.operator?.includes('Vajra')) {
+      return 'border-orange-500';
+    }
+    return 'border-green-500';
+  };
+
+  // Get text color class
+  const getTextColorClass = (route: Route) => {
+    const type = route.transport_type?.toLowerCase();
+    if (type === 'metro') {
+      return 'text-purple-600';
+    }
+    if (route.operator?.includes('Volvo')) {
+      return 'text-blue-600';
+    }
+    if (route.operator?.includes('Vajra')) {
+      return 'text-orange-600';
+    }
+    return 'text-green-600';
   };
 
   const isMetroRoute = (route: Route) => route.transport_type?.toLowerCase() === 'metro';
@@ -177,37 +236,28 @@ export default function RouteList({
           <div className="divide-y divide-gray-100">
             {filteredRoutes.map((route) => {
               const isSelected = selectedRoute?.id === route.id;
-              const isMetro = isMetroRoute(route);
+              const bgClass = isSelected ? getOperatorColorClass(route, true).replace('bg-', 'bg-').replace('100', '50') : '';
+              const borderClass = isSelected ? getBorderColorClass(route) : 'border-transparent';
 
               return (
                 <button
                   key={route.id}
                   onClick={() => onSelectRoute(route)}
-                  className={`w-full p-3 text-left transition-all border-l-4 ${
-                    isSelected
-                      ? isMetro 
-                        ? 'bg-purple-50 border-purple-500' 
-                        : 'bg-blue-50 border-blue-500'
-                      : 'border-transparent hover:bg-gray-50'
+                  className={`w-full p-3 text-left transition-all border-l-4 ${borderClass} ${
+                    isSelected ? getOperatorColorClass(route, false) : 'hover:bg-gray-50'
                   }`}
                 >
                   <div className="flex items-start gap-2">
                     {/* Transport Icon */}
-                    <div className={`text-lg p-1.5 rounded ${
-                      isSelected
-                        ? isMetro ? 'bg-purple-100' : 'bg-blue-100'
-                        : 'bg-gray-100'
-                    }`}>
-                      {getTransportIcon(route.transport_type)}
+                    <div className={`text-lg p-1.5 rounded ${getOperatorColorClass(route, isSelected)}`}>
+                      {getTransportIcon(route)}
                     </div>
                     
                     {/* Route Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
                         <span className={`font-bold text-sm ${
-                          isSelected
-                            ? isMetro ? 'text-purple-600' : 'text-blue-600'
-                            : 'text-gray-800'
+                          isSelected ? getTextColorClass(route) : 'text-gray-800'
                         }`}>
                           {route.route_number}
                         </span>
@@ -226,10 +276,13 @@ export default function RouteList({
                       </div>
                     </div>
 
-                    {/* Selection Indicator */}
+                    {/* Selection Indicator - Color matches operator */}
                     {isSelected && (
                       <div className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center ${
-                        isMetro ? 'bg-purple-500' : 'bg-blue-500'
+                        route.transport_type?.toLowerCase() === 'metro' ? 'bg-purple-500' :
+                        route.operator?.includes('Volvo') ? 'bg-blue-500' :
+                        route.operator?.includes('Vajra') ? 'bg-orange-500' :
+                        'bg-green-500'
                       }`}>
                         <svg className="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                           <path
