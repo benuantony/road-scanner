@@ -132,13 +132,30 @@ function FitBounds({ stops }: { stops: RouteStop[] }) {
   return null;
 }
 
+// Component to focus map on a specific stop
+function FocusOnStop({ stop }: { stop: { latitude: number; longitude: number } | null }) {
+  const map = useMap();
+  const prevStopRef = useRef<{ latitude: number; longitude: number } | null>(null);
+
+  useEffect(() => {
+    if (stop && (stop.latitude !== prevStopRef.current?.latitude || stop.longitude !== prevStopRef.current?.longitude)) {
+      map.flyTo([stop.latitude, stop.longitude], 16, { duration: 0.5 });
+      prevStopRef.current = stop;
+    }
+  }, [stop, map]);
+
+  return null;
+}
+
 interface RouteMapProps {
   selectedRoute: Route | null;
   vehicles: Vehicle[];
   allRoutes?: Route[];
+  focusedStop?: { latitude: number; longitude: number } | null;
+  currentStopIndex?: number;
 }
 
-export default function RouteMap({ selectedRoute, vehicles, allRoutes = [] }: RouteMapProps) {
+export default function RouteMap({ selectedRoute, vehicles, allRoutes = [], focusedStop = null, currentStopIndex = 0 }: RouteMapProps) {
   // Bangalore center coordinates
   const center: [number, number] = [12.9716, 77.5946];
   
@@ -209,6 +226,9 @@ export default function RouteMap({ selectedRoute, vehicles, allRoutes = [] }: Ro
         {/* Fit bounds when route changes */}
         <FitBounds stops={routeStops} />
 
+        {/* Focus on selected stop */}
+        <FocusOnStop stop={focusedStop} />
+
         {/* Show all route paths when no route is selected (simplified, straight lines) */}
         {!selectedRoute && allRoutes.map((route) => (
           <Polyline
@@ -262,40 +282,119 @@ export default function RouteMap({ selectedRoute, vehicles, allRoutes = [] }: Ro
         })()}
 
         {/* Route stops */}
-        {routeStops.map((stop, index) => (
-          <Marker
-            key={`stop-${stop.stop_id}`}
-            position={[stop.latitude, stop.longitude]}
-            icon={createStopIcon(true, index, routeStops.length, selectedRoute?.transport_type)}
-          >
-            <Popup>
-              <div className="p-3 min-w-[220px]">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xl">🚏</span>
-                  <p className="font-semibold text-blue-800">{stop.stop_name}</p>
+        {routeStops.map((stop, index) => {
+          const isMetro = selectedRoute?.transport_type === 'metro';
+          const isFirst = index === 0;
+          const isLast = index === routeStops.length - 1;
+          const isCurrent = index === currentStopIndex;
+          const isPassed = index < currentStopIndex;
+          
+          // Calculate ETA from current position
+          const currentArrivalOffset = routeStops[currentStopIndex]?.arrival_offset || 0;
+          const stopArrivalOffset = stop.arrival_offset || 0;
+          const etaFromCurrent = stopArrivalOffset - currentArrivalOffset;
+          
+          // Predicted arrival time
+          const now = new Date();
+          const predictedTime = new Date(now.getTime() + Math.max(0, etaFromCurrent) * 60000);
+          const predictedTimeStr = predictedTime.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+          
+          return (
+            <Marker
+              key={`stop-${stop.stop_id}`}
+              position={[stop.latitude, stop.longitude]}
+              icon={createStopIcon(true, index, routeStops.length, selectedRoute?.transport_type)}
+            >
+              <Popup>
+                <div className="min-w-[260px] bg-white rounded-lg shadow-lg overflow-hidden" style={{ margin: '-14px -20px' }}>
+                  {/* Header */}
+                  <div className={`px-4 py-3 ${
+                    isFirst ? 'bg-green-600' : 
+                    isLast ? 'bg-red-600' : 
+                    isCurrent ? 'bg-orange-500' :
+                    isPassed ? 'bg-gray-500' :
+                    (isMetro ? 'bg-purple-600' : 'bg-blue-600')
+                  } text-white`}>
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl">🚏</span>
+                      <div className="flex-1">
+                        <p className="font-bold">{stop.stop_name}</p>
+                        {stop.stop_tamil && (
+                          <p className="text-xs text-white/80">{stop.stop_tamil}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Status Badge */}
+                  <div className="px-4 py-2 border-b border-gray-100 flex items-center justify-between">
+                    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                      isFirst ? 'bg-green-100 text-green-700' :
+                      isLast ? 'bg-red-100 text-red-700' :
+                      isCurrent ? 'bg-orange-100 text-orange-700' :
+                      isPassed ? 'bg-gray-100 text-gray-600' :
+                      (isMetro ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700')
+                    }`}>
+                      {isFirst ? '🚩 Start' : 
+                       isLast ? '🏁 End' : 
+                       isCurrent ? '📍 Current' :
+                       isPassed ? '✓ Passed' : '○ Upcoming'}
+                    </span>
+                    <span className="text-sm text-gray-500">
+                      Stop {index + 1} of {routeStops.length}
+                    </span>
+                  </div>
+                  
+                  {/* Details */}
+                  <div className="px-4 py-3 space-y-2">
+                    {stop.distance > 0 && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-500">Distance from start</span>
+                        <span className="font-medium text-gray-700">{stop.distance.toFixed(1)} km</span>
+                      </div>
+                    )}
+                    
+                    {!isPassed && etaFromCurrent > 0 && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-500">ETA from current</span>
+                        <span className={`font-bold ${isMetro ? 'text-purple-600' : 'text-blue-600'}`}>
+                          ~{etaFromCurrent} min
+                        </span>
+                      </div>
+                    )}
+                    
+                    {!isPassed && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-500">Predicted arrival</span>
+                        <span className="font-medium text-gray-700">{predictedTimeStr}</span>
+                      </div>
+                    )}
+                    
+                    {isPassed && (
+                      <div className="flex items-center gap-2 text-sm text-green-600">
+                        <span>✓</span>
+                        <span>Bus has already passed this stop</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Progress indicator */}
+                  <div className="px-4 py-2 bg-gray-50 border-t border-gray-100">
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div 
+                          className={`h-2 rounded-full ${isMetro ? 'bg-purple-500' : 'bg-blue-500'}`}
+                          style={{ width: `${((index + 1) / routeStops.length) * 100}%` }}
+                        />
+                      </div>
+                      <span className="text-xs text-gray-500">{Math.round(((index + 1) / routeStops.length) * 100)}%</span>
+                    </div>
+                  </div>
                 </div>
-                {stop.stop_tamil && (
-                  <p className="text-sm text-gray-500 mb-2">{stop.stop_tamil}</p>
-                )}
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-medium">
-                    Stop {index + 1} of {routeStops.length}
-                  </span>
-                </div>
-                {stop.distance > 0 && (
-                  <p className="text-sm text-gray-500 mt-2 flex items-center gap-1">
-                    <span className="text-blue-500">📍</span> {stop.distance} km from start
-                  </p>
-                )}
-                {stop.arrival_offset !== undefined && stop.arrival_offset > 0 && (
-                  <p className="text-sm text-gray-500 flex items-center gap-1">
-                    <span className="text-orange-500">⏱️</span> ETA: ~{Math.floor(stop.arrival_offset / 60) > 0 ? `${Math.floor(stop.arrival_offset / 60)}h ` : ''}{stop.arrival_offset % 60}min
-                  </p>
-                )}
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+              </Popup>
+            </Marker>
+          );
+        })}
 
         {/* All stops when no route selected */}
         {!selectedRoute && allRoutes.flatMap(route => route.stops).filter((stop, index, self) => 
@@ -317,37 +416,183 @@ export default function RouteMap({ selectedRoute, vehicles, allRoutes = [] }: Ro
           </Marker>
         ))}
 
-        {/* Vehicle markers */}
-        {vehicles.map((vehicle) => (
+        {/* Current bus position marker - shows bus at the current stop (orange dot in timeline) */}
+        {selectedRoute && routeStops.length > 0 && currentStopIndex < routeStops.length && (() => {
+          const isMetro = selectedRoute.transport_type === 'metro';
+          const stopsCompleted = currentStopIndex;
+          const stopsRemaining = routeStops.length - 1 - currentStopIndex;
+          const progressPercent = routeStops.length > 1 ? Math.round((currentStopIndex / (routeStops.length - 1)) * 100) : 0;
+          
+          // Calculate ETA to destination
+          const currentArrivalOffset = routeStops[currentStopIndex]?.arrival_offset || 0;
+          const finalArrivalOffset = routeStops[routeStops.length - 1]?.arrival_offset || 0;
+          const etaToDestination = finalArrivalOffset - currentArrivalOffset;
+          
+          // Calculate predicted arrival time
+          const now = new Date();
+          const predictedArrival = new Date(now.getTime() + etaToDestination * 60000);
+          const predictedArrivalStr = predictedArrival.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+          
+          // Calculate next stop ETA
+          const nextStopOffset = currentStopIndex < routeStops.length - 1 
+            ? (routeStops[currentStopIndex + 1]?.arrival_offset || 0) - currentArrivalOffset
+            : 0;
+          
+          return (
+            <Marker
+              key="current-bus-position"
+              position={[routeStops[currentStopIndex].latitude, routeStops[currentStopIndex].longitude]}
+              icon={createVehicleIcon(selectedRoute.transport_type || 'bus')}
+            >
+              <Popup>
+                <div className="min-w-[280px] bg-white rounded-lg shadow-lg overflow-hidden" style={{ margin: '-14px -20px' }}>
+                  {/* Header */}
+                  <div className={`px-4 py-3 ${isMetro ? 'bg-purple-600' : 'bg-blue-600'} text-white`}>
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl">{isMetro ? '🚇' : '🚌'}</span>
+                      <div>
+                        <p className="font-bold">{selectedRoute.route_number}</p>
+                        <p className="text-xs text-white/80">{selectedRoute.route_name}</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Current Location */}
+                  <div className="px-4 py-3 bg-orange-50 border-b border-orange-100">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
+                      <span className="text-xs text-orange-600 font-medium uppercase">Current Location</span>
+                    </div>
+                    <p className="font-semibold text-gray-800 mt-1">{routeStops[currentStopIndex].stop_name}</p>
+                  </div>
+                  
+                  {/* Next Stop */}
+                  {currentStopIndex < routeStops.length - 1 && (
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-3 h-3 ${isMetro ? 'bg-purple-400' : 'bg-blue-400'} rounded-full`}></div>
+                        <span className="text-xs text-gray-500 font-medium uppercase">Next Stop</span>
+                        {nextStopOffset > 0 && (
+                          <span className={`ml-auto text-xs font-bold ${isMetro ? 'text-purple-600' : 'text-blue-600'}`}>
+                            ~{nextStopOffset} min
+                          </span>
+                        )}
+                      </div>
+                      <p className="font-medium text-gray-700 mt-1">{routeStops[currentStopIndex + 1].stop_name}</p>
+                    </div>
+                  )}
+                  
+                  {/* Progress Section */}
+                  <div className="px-4 py-3 border-b border-gray-100">
+                    <div className="flex items-center justify-between text-sm mb-2">
+                      <span className="text-gray-500">Route Progress</span>
+                      <span className={`font-bold ${isMetro ? 'text-purple-600' : 'text-blue-600'}`}>{progressPercent}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                      <div
+                        className={`h-3 rounded-full transition-all duration-500 ${
+                          isMetro 
+                            ? 'bg-gradient-to-r from-purple-500 to-purple-600' 
+                            : 'bg-gradient-to-r from-blue-500 to-blue-600'
+                        }`}
+                        style={{ width: `${progressPercent}%` }}
+                      />
+                    </div>
+                    
+                    {/* Stop indicators */}
+                    <div className="flex justify-between mt-2 text-xs">
+                      <div className="flex items-center gap-1">
+                        <span className="text-green-600">✓</span>
+                        <span className="text-gray-600">{stopsCompleted} stops completed</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="text-gray-400">○</span>
+                        <span className="text-gray-600">{stopsRemaining} stops remaining</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* ETA Section */}
+                  <div className="px-4 py-3 bg-gray-50">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-xs text-gray-500 uppercase mb-1">ETA to Destination</p>
+                        <p className={`text-lg font-bold ${isMetro ? 'text-purple-600' : 'text-blue-600'}`}>
+                          {etaToDestination > 0 ? `${etaToDestination} min` : 'Arrived'}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 uppercase mb-1">Predicted Arrival</p>
+                        <p className="text-lg font-bold text-gray-700">{predictedArrivalStr}</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Footer */}
+                  <div className="px-4 py-2 bg-gray-100 border-t border-gray-200">
+                    <div className="flex items-center justify-between text-xs text-gray-500">
+                      <span className="flex items-center gap-1">
+                        <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                        Live tracking
+                      </span>
+                      <span>Updated just now</span>
+                    </div>
+                  </div>
+                </div>
+              </Popup>
+            </Marker>
+          );
+        })()}
+
+        {/* Vehicle markers from live tracking - Only show when no route is selected */}
+        {!selectedRoute && vehicles.map((vehicle) => (
           <Marker
             key={`vehicle-${vehicle.id}`}
             position={[vehicle.current_latitude, vehicle.current_longitude]}
-            icon={createVehicleIcon(vehicle.transport_type || selectedRoute?.transport_type || 'bus')}
+            icon={createVehicleIcon(vehicle.transport_type || 'bus')}
           >
             <Popup>
-              <div className="p-3 min-w-[240px]">
-                <p className="font-semibold flex items-center gap-2 text-blue-800">
-                  🚌 {vehicle.vehicle_number}
-                </p>
-                <p className="text-sm text-gray-500 mt-1">{vehicle.route_name}</p>
-                <div className="mt-3 space-y-2 text-sm">
-                  <p className="text-gray-600">
-                    <span className="text-blue-500">📍</span> Current: <span className="font-medium">{vehicle.current_stop_name}</span>
-                  </p>
-                  {vehicle.next_stop_name && (
-                    <p className="text-gray-600">
-                      <span className="text-orange-500">➡️</span> Next: <span className="font-medium">{vehicle.next_stop_name}</span>
-                    </p>
-                  )}
-                </div>
-                <div className="mt-3">
-                  <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
-                    <span>Progress</span>
-                    <span className="text-blue-600">{Math.round(vehicle.progress_percent)}%</span>
+              <div className="min-w-[260px] bg-white rounded-lg shadow-lg overflow-hidden" style={{ margin: '-14px -20px' }}>
+                {/* Header */}
+                <div className="px-4 py-3 bg-blue-600 text-white">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">🚌</span>
+                    <div>
+                      <p className="font-bold">{vehicle.vehicle_number}</p>
+                      <p className="text-xs text-white/80">{vehicle.route_name}</p>
+                    </div>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                </div>
+                
+                {/* Current Location */}
+                <div className="px-4 py-3 bg-blue-50 border-b border-blue-100">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+                    <span className="text-xs text-blue-600 font-medium uppercase">Current Location</span>
+                  </div>
+                  <p className="font-semibold text-gray-800 mt-1">{vehicle.current_stop_name}</p>
+                </div>
+                
+                {/* Next Stop */}
+                {vehicle.next_stop_name && (
+                  <div className="px-4 py-3 border-b border-gray-100">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-orange-400 rounded-full"></div>
+                      <span className="text-xs text-gray-500 font-medium uppercase">Next Stop</span>
+                    </div>
+                    <p className="font-medium text-gray-700 mt-1">{vehicle.next_stop_name}</p>
+                  </div>
+                )}
+                
+                {/* Progress */}
+                <div className="px-4 py-3 bg-gray-50">
+                  <div className="flex items-center justify-between text-sm mb-2">
+                    <span className="text-gray-500">Progress</span>
+                    <span className="font-bold text-blue-600">{Math.round(vehicle.progress_percent)}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
                     <div
-                      className="h-2 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-300"
+                      className="h-2.5 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-300"
                       style={{ width: `${vehicle.progress_percent}%` }}
                     />
                   </div>

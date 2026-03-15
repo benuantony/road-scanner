@@ -126,7 +126,7 @@ function StopInput({ label, placeholder, value, onChange, icon }: StopInputProps
       {isOpen && suggestions.length > 0 && (
         <div
           ref={dropdownRef}
-          className="autocomplete-dropdown absolute z-50 w-full mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-xl shadow-gray-950/50 max-h-60 overflow-y-auto"
+          className="autocomplete-dropdown absolute z-[9999] w-full mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-xl shadow-gray-950/50 max-h-60 overflow-y-auto"
         >
           {suggestions.map((stop) => (
             <button

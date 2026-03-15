@@ -16,6 +16,8 @@ function App() {
   const [hasSearched, setHasSearched] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [transportFilter, setTransportFilter] = useState<'all' | 'bus' | 'metro'>('all');
+  const [focusedStop, setFocusedStop] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [currentStopIndex, setCurrentStopIndex] = useState<number>(0);
 
   // Get route IDs for WebSocket subscription
   const routeIds = useMemo(() => {
@@ -62,6 +64,15 @@ function App() {
 
   const handleCloseTimeline = () => {
     setSelectedRoute(null);
+    setFocusedStop(null);
+  };
+
+  const handleStopSelect = (_stopIndex: number, latitude: number, longitude: number) => {
+    setFocusedStop({ latitude, longitude });
+  };
+
+  const handleCurrentStopChange = (index: number) => {
+    setCurrentStopIndex(index);
   };
 
   return (
@@ -95,8 +106,8 @@ function App() {
         </div>
       </header>
 
-      {/* Search Bar - Fixed height */}
-      <div className="flex-shrink-0 bg-gray-900/50 backdrop-blur-sm border-b border-gray-800 px-4 py-3">
+      {/* Search Bar - Fixed height, high z-index for dropdown to appear above content */}
+      <div className="flex-shrink-0 bg-gray-900/50 backdrop-blur-sm border-b border-gray-800 px-4 py-3 relative z-[100]">
         <div className="max-w-4xl mx-auto">
           <SearchBar onSearch={handleSearch} />
         </div>
@@ -119,6 +130,8 @@ function App() {
                     selectedRoute={selectedRoute}
                     vehicles={filteredVehicles}
                     allRoutes={routes}
+                    focusedStop={focusedStop}
+                    currentStopIndex={currentStopIndex}
                   />
                 </div>
               </div>
@@ -146,6 +159,8 @@ function App() {
                   vehicles={filteredVehicles}
                   isConnected={isConnected}
                   onClose={handleCloseTimeline}
+                  onStopSelect={handleStopSelect}
+                  onCurrentStopChange={handleCurrentStopChange}
                 />
               </div>
             )}

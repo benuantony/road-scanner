@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Route, Vehicle } from '../types';
 
 interface RouteTimelineProps {
@@ -6,9 +6,12 @@ interface RouteTimelineProps {
   vehicles: Vehicle[];
   isConnected: boolean;
   onClose: () => void;
+  onStopSelect?: (stopIndex: number, latitude: number, longitude: number) => void;
+  onCurrentStopChange?: (currentStopIndex: number) => void;
 }
 
-export default function RouteTimeline({ route, vehicles, isConnected, onClose }: RouteTimelineProps) {
+export default function RouteTimeline({ route, vehicles, isConnected, onClose, onStopSelect, onCurrentStopChange }: RouteTimelineProps) {
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const stops = route.stops || [];
   const isMetro = route.transport_type === 'metro';
   
@@ -25,9 +28,42 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose }:
     return Math.min(idx, stops.length - 1);
   }, [route.id, stops.length]);
 
+  // Notify parent about current stop index changes
+  useMemo(() => {
+    if (onCurrentStopChange && stops.length > 0) {
+      onCurrentStopChange(currentStopIndex);
+    }
+  }, [currentStopIndex, onCurrentStopChange, stops.length]);
+
+  // Handle stop click to focus on map
+  const handleStopClick = (index: number) => {
+    if (onStopSelect && stops[index]) {
+      onStopSelect(index, stops[index].latitude, stops[index].longitude);
+    }
+  };
+
   // Calculate total route info
   const totalDistance = stops.length > 0 ? stops[stops.length - 1].distance || 0 : 0;
   const totalTime = stops.length > 0 ? stops[stops.length - 1].arrival_offset || 0 : 0;
+
+  // Get origin and destination names
+  const originName = stops[0]?.stop_name || 'Start';
+  const destName = stops[stops.length - 1]?.stop_name || 'End';
+  const currentStopName = stops[currentStopIndex]?.stop_name || '';
+  
+  // Count stops by status
+  const passedCount = currentStopIndex;
+  const upcomingCount = stops.length - currentStopIndex - 1;
+  
+  // Calculate ETA to destination
+  const currentArrivalOffset = stops[currentStopIndex]?.arrival_offset || 0;
+  const finalArrivalOffset = stops[stops.length - 1]?.arrival_offset || 0;
+  const etaToDestination = finalArrivalOffset - currentArrivalOffset;
+  
+  // Calculate next stop ETA
+  const nextStopEta = currentStopIndex < stops.length - 1 
+    ? (stops[currentStopIndex + 1]?.arrival_offset || 0) - currentArrivalOffset
+    : 0;
 
   const getStopStatus = (index: number) => {
     if (index < currentStopIndex) return 'reached';
@@ -105,31 +141,61 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose }:
     };
   };
 
+  // Toggle collapse/expand
+  const toggleCollapse = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
   return (
-    <div className="bg-white border-t-2 border-gray-200 shadow-lg max-h-[50vh] flex flex-col">
-      {/* Header */}
-      <div className={`px-4 py-3 flex items-center justify-between flex-shrink-0 ${
+    <div className={`bg-white border-t-2 border-gray-200 shadow-lg flex flex-col transition-all duration-300 ease-in-out ${
+      isCollapsed ? 'max-h-[60px]' : 'max-h-[50vh]'
+    }`}>
+      {/* Header - Always Visible */}
+      <div className={`px-4 py-2.5 flex items-center justify-between flex-shrink-0 ${
         isMetro ? 'bg-gradient-to-r from-purple-600 to-purple-700' : 'bg-gradient-to-r from-blue-600 to-blue-700'
       }`}>
-        <div className="flex items-center gap-3">
-          <span className="text-2xl">{isMetro ? '🚇' : '🚌'}</span>
-          <div>
-            <h3 className="font-bold text-white text-lg">{route.route_number}</h3>
-            <p className="text-white/80 text-sm">{route.route_name}</p>
+        {/* Left: Route Info & Flow */}
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <span className="text-xl flex-shrink-0">{isMetro ? '🚇' : '🚌'}</span>
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <span className="font-bold text-white text-sm">{route.route_number}</span>
+            <span className="text-white/60">|</span>
+            <div className="flex items-center gap-1.5 text-white/90 text-sm truncate">
+              <span className="truncate max-w-[100px]">{originName}</span>
+              <span className="text-white/60">→</span>
+              <span className="truncate max-w-[100px]">{destName}</span>
+            </div>
           </div>
         </div>
-        
-        <div className="flex items-center gap-4">
-          {/* Route Stats */}
-          <div className="flex items-center gap-4 text-white/90 text-sm">
+
+        {/* Center: Legend (only when collapsed) OR Stats (when expanded) */}
+        {isCollapsed ? (
+          <div className="flex items-center gap-3 text-xs px-4">
+            <div className="flex items-center gap-1">
+              <span className={`w-2.5 h-2.5 rounded-full ${isMetro ? 'bg-purple-300' : 'bg-green-300'}`}></span>
+              <span className="text-white/80">{passedCount}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="w-2.5 h-2.5 rounded-full bg-orange-400 animate-pulse"></span>
+              <span className="text-white font-medium">1</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <span className={`w-2.5 h-2.5 rounded-full ${isMetro ? 'bg-purple-200/50' : 'bg-blue-200/50'}`}></span>
+              <span className="text-white/80">{upcomingCount}</span>
+            </div>
+            <span className="text-white/50">|</span>
+            <span className="text-white/90 font-medium">{etaToDestination > 0 ? `${etaToDestination}m` : 'Arrived'}</span>
+          </div>
+        ) : (
+          <div className="hidden md:flex items-center gap-4 text-white/90 text-sm">
             <div className="flex items-center gap-1">
               <span>🚏</span>
-              <span>{stops.length} stops</span>
+              <span>{stops.length}</span>
             </div>
             {totalDistance > 0 && (
               <div className="flex items-center gap-1">
                 <span>📏</span>
-                <span>{totalDistance.toFixed(1)} km</span>
+                <span>{totalDistance.toFixed(1)}km</span>
               </div>
             )}
             {totalTime > 0 && (
@@ -139,14 +205,33 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose }:
               </div>
             )}
           </div>
-          
+        )}
+        
+        {/* Right: Live Status + Toggle + Close */}
+        <div className="flex items-center gap-2">
           {/* Live Status */}
-          <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
+          <div className={`flex items-center gap-1.5 px-2 py-1 rounded-full text-xs ${
             isConnected ? 'bg-green-500/20 text-green-100' : 'bg-gray-500/20 text-gray-300'
           }`}>
             <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-400 animate-pulse' : 'bg-gray-400'}`}></span>
-            <span>{isConnected ? 'Live' : 'Offline'}</span>
+            <span className="hidden sm:inline">{isConnected ? 'Live' : 'Offline'}</span>
           </div>
+
+          {/* Toggle Button */}
+          <button
+            onClick={toggleCollapse}
+            className="p-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+            title={isCollapsed ? 'Expand' : 'Collapse'}
+          >
+            <svg 
+              className={`w-5 h-5 transition-transform duration-300 ${isCollapsed ? '' : 'rotate-180'}`} 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+            </svg>
+          </button>
           
           {/* Close Button */}
           <button
@@ -160,164 +245,188 @@ export default function RouteTimeline({ route, vehicles, isConnected, onClose }:
         </div>
       </div>
 
-      {/* Visual Timeline - Just Dots */}
-      <div className="px-4 py-3 border-b border-gray-100 bg-gray-50 flex-shrink-0">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-4 text-xs">
-            <span className="text-gray-500">Progress:</span>
-            <div className="flex items-center gap-1.5">
-              <span className={`w-3 h-3 rounded-full ${isMetro ? 'bg-purple-500' : 'bg-green-500'}`}></span>
-              <span className="text-gray-600">Passed</span>
+      {/* Collapsed Mini Info Bar */}
+      {isCollapsed && (
+        <div className="px-4 py-1.5 bg-gray-50 border-b border-gray-200 flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2">
+            <span className="text-orange-600 font-medium">📍 {currentStopName}</span>
+            {nextStopEta > 0 && (
+              <>
+                <span className="text-gray-400">→</span>
+                <span className="text-gray-600">Next in {nextStopEta}m</span>
+              </>
+            )}
+          </div>
+          <span className="text-gray-400">Click ▲ to expand</span>
+        </div>
+      )}
+
+      {/* Expandable Content */}
+      {!isCollapsed && (
+        <>
+          {/* Visual Timeline - Just Dots */}
+          <div className="px-4 py-3 border-b border-gray-100 bg-gray-50 flex-shrink-0">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-4 text-xs">
+                <span className="text-gray-500">Progress:</span>
+                <div className="flex items-center gap-1.5">
+                  <span className={`w-3 h-3 rounded-full ${isMetro ? 'bg-purple-500' : 'bg-green-500'}`}></span>
+                  <span className="text-gray-600">Passed ({passedCount})</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-3 h-3 rounded-full bg-orange-500 animate-pulse"></span>
+                  <span className="text-gray-600">Current</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className={`w-3 h-3 rounded-full ${isMetro ? 'bg-purple-200' : 'bg-blue-200'}`}></span>
+                  <span className="text-gray-600">Upcoming ({upcomingCount})</span>
+                </div>
+              </div>
+              <span className="text-xs text-gray-400">
+                Stop {currentStopIndex + 1} of {stops.length}
+              </span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-orange-500 animate-pulse"></span>
-              <span className="text-gray-600">Current</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className={`w-3 h-3 rounded-full ${isMetro ? 'bg-purple-200' : 'bg-blue-200'}`}></span>
-              <span className="text-gray-600">Upcoming</span>
+
+            {/* Dot Timeline */}
+            <div className="overflow-x-auto py-2">
+              <div className="flex items-center min-w-max gap-0.5">
+                {stops.map((stop, index) => {
+                  const status = getStopStatus(index);
+                  const isFirst = index === 0;
+                  const isLast = index === stops.length - 1;
+                  
+                  return (
+                    <div key={stop.stop_id} className="flex items-center group relative">
+                      {/* Dot */}
+                      <div 
+                        className={`
+                          rounded-full transition-all cursor-pointer
+                          ${getStopColor(status)}
+                          ${isFirst || isLast ? 'w-4 h-4' : 'w-2.5 h-2.5'}
+                          ${status === 'current' ? 'ring-2 ring-orange-300 animate-pulse w-4 h-4' : ''}
+                        `}
+                        title={stop.stop_name}
+                        onClick={() => handleStopClick(index)}
+                      />
+                      
+                      {/* Tooltip on hover */}
+                      <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 hidden group-hover:block z-20 pointer-events-none">
+                        <div className="bg-gray-900 text-white text-xs rounded px-2 py-1 whitespace-nowrap">
+                          {stop.stop_name}
+                        </div>
+                      </div>
+                      
+                      {/* Connecting line */}
+                      {index < stops.length - 1 && (
+                        <div className={`h-0.5 w-3 ${getLineColor(status)}`}></div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
-          <span className="text-xs text-gray-400">
-            Stop {currentStopIndex + 1} of {stops.length}
-          </span>
-        </div>
 
-        {/* Dot Timeline */}
-        <div className="overflow-x-auto py-2">
-          <div className="flex items-center min-w-max gap-0.5">
-            {stops.map((stop, index) => {
-              const status = getStopStatus(index);
-              const isFirst = index === 0;
-              const isLast = index === stops.length - 1;
-              
-              return (
-                <div key={stop.stop_id} className="flex items-center group relative">
-                  {/* Dot */}
-                  <div 
-                    className={`
-                      rounded-full transition-all cursor-pointer
-                      ${getStopColor(status)}
-                      ${isFirst || isLast ? 'w-4 h-4' : 'w-2.5 h-2.5'}
-                      ${status === 'current' ? 'ring-2 ring-orange-300 animate-pulse w-4 h-4' : ''}
-                    `}
-                    title={stop.stop_name}
-                  />
+          {/* Stop List with ETA */}
+          <div className="flex-1 overflow-y-auto min-h-0">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50 sticky top-0">
+                <tr className="text-left text-xs text-gray-500 uppercase">
+                  <th className="px-3 py-2 w-10">#</th>
+                  <th className="px-2 py-2 w-14">Status</th>
+                  <th className="px-2 py-2">Stop Name</th>
+                  <th className="px-2 py-2 text-right w-16">Sched.</th>
+                  <th className="px-2 py-2 text-right w-16">Actual</th>
+                  <th className="px-2 py-2 text-right w-16">Delay</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {stops.map((stop, index) => {
+                  const status = getStopStatus(index);
+                  const eta = calculateETA(index);
+                  const timing = getStopTiming(index);
                   
-                  {/* Tooltip on hover */}
-                  <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 hidden group-hover:block z-20 pointer-events-none">
-                    <div className="bg-gray-900 text-white text-xs rounded px-2 py-1 whitespace-nowrap">
-                      {stop.stop_name}
-                    </div>
-                  </div>
-                  
-                  {/* Connecting line */}
-                  {index < stops.length - 1 && (
-                    <div className={`h-0.5 w-3 ${getLineColor(status)}`}></div>
+                  return (
+                    <tr 
+                      key={stop.stop_id}
+                      onClick={() => handleStopClick(index)}
+                      className={`
+                        cursor-pointer transition-colors
+                        ${status === 'current' ? 'bg-orange-50 hover:bg-orange-100' : ''}
+                        ${status === 'reached' ? 'bg-gray-50/50 hover:bg-gray-100' : ''}
+                        ${status === 'upcoming' ? 'hover:bg-blue-50' : ''}
+                      `}
+                    >
+                      <td className="px-3 py-1.5 text-gray-400 text-xs">{index + 1}</td>
+                      <td className="px-2 py-1.5">
+                        <div className="flex items-center gap-1">
+                          <span className={`w-2 h-2 rounded-full ${getStopColor(status)} ${
+                            status === 'current' ? 'animate-pulse' : ''
+                          }`}></span>
+                          <span className={`text-xs ${
+                            status === 'current' ? 'text-orange-600 font-medium' :
+                            status === 'reached' ? 'text-green-600' : 'text-gray-400'
+                          }`}>
+                            {status === 'current' ? '●' : status === 'reached' ? '✓' : '○'}
+                          </span>
+                        </div>
+                      </td>
+                      <td className={`px-2 py-1.5 text-sm ${
+                        status === 'current' ? 'font-semibold text-gray-900' :
+                        status === 'reached' ? 'text-gray-500' : 'text-gray-700'
+                      }`}>
+                        {stop.stop_name}
+                      </td>
+                      <td className={`px-2 py-1.5 text-right text-xs font-mono ${
+                        status === 'reached' ? 'text-gray-400' : 'text-gray-600'
+                      }`}>
+                        {timing.scheduled}
+                      </td>
+                      <td className={`px-2 py-1.5 text-right text-xs font-mono ${
+                        status === 'current' ? 'text-orange-600 font-semibold' :
+                        status === 'reached' ? 'text-gray-600' : 'text-blue-600'
+                      }`}>
+                        {status === 'upcoming' ? formatRealTime(eta) : timing.actual}
+                      </td>
+                      <td className={`px-2 py-1.5 text-right text-xs font-medium ${
+                        timing.delay > 10 ? 'text-red-500' :
+                        timing.delay > 5 ? 'text-orange-500' :
+                        timing.delay > 0 ? 'text-yellow-600' : 'text-green-500'
+                      }`}>
+                        {timing.delay > 0 ? `+${timing.delay}m` : 'On time'}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Active Vehicles (compact) */}
+          {vehicles.length > 0 && (
+            <div className="px-4 py-2 border-t border-gray-200 bg-gray-50 flex-shrink-0">
+              <div className="flex items-center gap-3 text-xs">
+                <span className="text-gray-500">Active:</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {vehicles.slice(0, 3).map(vehicle => (
+                    <span
+                      key={vehicle.id}
+                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded ${
+                        isMetro ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
+                      }`}
+                    >
+                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                      {vehicle.vehicle_number}
+                    </span>
+                  ))}
+                  {vehicles.length > 3 && (
+                    <span className="text-gray-400">+{vehicles.length - 3} more</span>
                   )}
                 </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* Stop List with ETA */}
-      <div className="flex-1 overflow-y-auto min-h-0">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 sticky top-0">
-            <tr className="text-left text-xs text-gray-500 uppercase">
-              <th className="px-3 py-2 w-10">#</th>
-              <th className="px-2 py-2 w-14">Status</th>
-              <th className="px-2 py-2">Stop Name</th>
-              <th className="px-2 py-2 text-right w-16">Sched.</th>
-              <th className="px-2 py-2 text-right w-16">Actual</th>
-              <th className="px-2 py-2 text-right w-16">Delay</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-50">
-            {stops.map((stop, index) => {
-              const status = getStopStatus(index);
-              const eta = calculateETA(index);
-              const timing = getStopTiming(index);
-              
-              return (
-                <tr 
-                  key={stop.stop_id}
-                  className={`
-                    ${status === 'current' ? 'bg-orange-50' : ''}
-                    ${status === 'reached' ? 'bg-gray-50/50' : ''}
-                    ${status === 'upcoming' ? 'hover:bg-blue-50/30' : ''}
-                  `}
-                >
-                  <td className="px-3 py-1.5 text-gray-400 text-xs">{index + 1}</td>
-                  <td className="px-2 py-1.5">
-                    <div className="flex items-center gap-1">
-                      <span className={`w-2 h-2 rounded-full ${getStopColor(status)} ${
-                        status === 'current' ? 'animate-pulse' : ''
-                      }`}></span>
-                      <span className={`text-xs ${
-                        status === 'current' ? 'text-orange-600 font-medium' :
-                        status === 'reached' ? 'text-green-600' : 'text-gray-400'
-                      }`}>
-                        {status === 'current' ? '●' : status === 'reached' ? '✓' : '○'}
-                      </span>
-                    </div>
-                  </td>
-                  <td className={`px-2 py-1.5 text-sm ${
-                    status === 'current' ? 'font-semibold text-gray-900' :
-                    status === 'reached' ? 'text-gray-500' : 'text-gray-700'
-                  }`}>
-                    {stop.stop_name}
-                  </td>
-                  <td className={`px-2 py-1.5 text-right text-xs font-mono ${
-                    status === 'reached' ? 'text-gray-400' : 'text-gray-600'
-                  }`}>
-                    {timing.scheduled}
-                  </td>
-                  <td className={`px-2 py-1.5 text-right text-xs font-mono ${
-                    status === 'current' ? 'text-orange-600 font-semibold' :
-                    status === 'reached' ? 'text-gray-600' : 'text-blue-600'
-                  }`}>
-                    {status === 'upcoming' ? formatRealTime(eta) : timing.actual}
-                  </td>
-                  <td className={`px-2 py-1.5 text-right text-xs font-medium ${
-                    timing.delay > 10 ? 'text-red-500' :
-                    timing.delay > 5 ? 'text-orange-500' :
-                    timing.delay > 0 ? 'text-yellow-600' : 'text-green-500'
-                  }`}>
-                    {timing.delay > 0 ? `+${timing.delay}m` : 'On time'}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Active Vehicles (compact) */}
-      {vehicles.length > 0 && (
-        <div className="px-4 py-2 border-t border-gray-200 bg-gray-50 flex-shrink-0">
-          <div className="flex items-center gap-3 text-xs">
-            <span className="text-gray-500">Active:</span>
-            <div className="flex flex-wrap gap-1.5">
-              {vehicles.slice(0, 3).map(vehicle => (
-                <span
-                  key={vehicle.id}
-                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded ${
-                    isMetro ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
-                  }`}
-                >
-                  <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                  {vehicle.vehicle_number}
-                </span>
-              ))}
-              {vehicles.length > 3 && (
-                <span className="text-gray-400">+{vehicles.length - 3} more</span>
-              )}
+              </div>
             </div>
-          </div>
-        </div>
+          )}
+        </>
       )}
     </div>
   );

@@ -342,10 +342,6 @@ export default function HeroSection() {
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-8 space-y-12">
         {/* Hero Header */}
         <div className="text-center space-y-4 animate-fade-in">
-          <div className="flex justify-center gap-4 mb-6">
-            <span className="text-6xl animate-bounce" style={{ animationDelay: '0ms' }}>🚌</span>
-            <span className="text-6xl animate-bounce" style={{ animationDelay: '150ms' }}>🚇</span>
-          </div>
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
             Bangalore Transit
           </h1>
@@ -353,6 +349,10 @@ export default function HeroSection() {
             Your complete guide to BMTC buses and Namma Metro. 
             Search routes, track vehicles in real-time, and never miss your ride.
           </p>
+          <div className="flex justify-center gap-4 mt-6">
+            <span className="text-6xl animate-bounce" style={{ animationDelay: '0ms' }}>🚌</span>
+            <span className="text-6xl animate-bounce" style={{ animationDelay: '150ms' }}>🚇</span>
+          </div>
         </div>
 
         {/* Statistics */}
